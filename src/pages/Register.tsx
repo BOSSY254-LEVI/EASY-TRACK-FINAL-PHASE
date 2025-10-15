@@ -18,7 +18,9 @@ const Register = () => {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    // Registration logic will be added later
+    // Save user data to localStorage
+    localStorage.setItem("userName", formData.name);
+    localStorage.setItem("userEmail", formData.email);
     console.log("Registration attempt:", formData);
     navigate("/dashboard");
   };

@@ -5,14 +5,42 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import KPICard from "@/components/KPICard";
 import ActivityFeed from "@/components/ActivityFeed";
 import { Link } from "react-router-dom";
+import { LineChart, Line, BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Legend } from "recharts";
+import { useState, useEffect } from "react";
 
 const Dashboard = () => {
+  const [userName, setUserName] = useState("John Doe");
+  
+  useEffect(() => {
+    const storedName = localStorage.getItem("userName");
+    if (storedName) {
+      setUserName(storedName);
+    }
+  }, []);
+
   const navItems = [
-    { icon: Activity, label: "Dashboard", active: true },
-    { icon: FileText, label: "Data Collection", active: false },
-    { icon: Map, label: "Maps", active: false },
-    { icon: AlertCircle, label: "Alerts", active: false },
-    { icon: Settings, label: "Settings", active: false },
+    { icon: Activity, label: "Dashboard", active: true, path: "/dashboard" },
+    { icon: FileText, label: "Data Collection", active: false, path: "/dashboard" },
+    { icon: Map, label: "Maps", active: false, path: "/dashboard" },
+    { icon: AlertCircle, label: "Alerts", active: false, path: "/dashboard" },
+    { icon: Settings, label: "Settings", active: false, path: "/dashboard" },
+  ];
+
+  const chartData = [
+    { month: "Jan", reports: 65, tests: 45, alerts: 12 },
+    { month: "Feb", reports: 78, tests: 52, alerts: 8 },
+    { month: "Mar", reports: 90, tests: 61, alerts: 15 },
+    { month: "Apr", reports: 81, tests: 58, alerts: 10 },
+    { month: "May", reports: 95, tests: 70, alerts: 6 },
+    { month: "Jun", reports: 105, tests: 82, alerts: 9 },
+  ];
+
+  const mapLocations = [
+    { id: 1, name: "Nairobi Site A", lat: 20, lng: 25, type: "water", status: "active" },
+    { id: 2, name: "Kampala Site B", lat: 45, lng: 60, type: "health", status: "active" },
+    { id: 3, name: "Dar es Salaam", lat: 70, lng: 40, type: "climate", status: "alert" },
+    { id: 4, name: "Kigali Zone C", lat: 35, lng: 75, type: "water", status: "active" },
+    { id: 5, name: "Lagos District", lat: 55, lng: 20, type: "health", status: "active" },
   ];
 
   return (
@@ -33,8 +61,9 @@ const Dashboard = () => {
 
         <nav className="flex-1 p-4 space-y-1">
           {navItems.map((item) => (
-            <button
+            <Link
               key={item.label}
+              to={item.path}
               className={`w-full flex items-center gap-3 px-4 py-3 rounded-lg transition-colors ${
                 item.active
                   ? "bg-sidebar-accent text-sidebar-accent-foreground font-medium"
@@ -43,7 +72,7 @@ const Dashboard = () => {
             >
               <item.icon className="h-5 w-5" />
               <span className="text-sm">{item.label}</span>
-            </button>
+            </Link>
           ))}
         </nav>
 
@@ -53,7 +82,7 @@ const Dashboard = () => {
               <span className="text-sm font-semibold text-primary">JD</span>
             </div>
             <div className="flex-1">
-              <p className="text-sm font-medium text-sidebar-foreground">John Doe</p>
+              <p className="text-sm font-medium text-sidebar-foreground">{userName}</p>
               <p className="text-xs text-muted-foreground">Field Agent</p>
             </div>
           </div>
@@ -138,9 +167,24 @@ const Dashboard = () => {
                     <CardTitle className="text-lg font-semibold">Data Collection Trends</CardTitle>
                   </CardHeader>
                   <CardContent>
-                    <div className="h-64 flex items-center justify-center bg-muted/30 rounded-lg border-2 border-dashed border-muted">
-                      <p className="text-muted-foreground">Chart visualization area</p>
-                    </div>
+                    <ResponsiveContainer width="100%" height={300}>
+                      <LineChart data={chartData}>
+                        <CartesianGrid strokeDasharray="3 3" className="stroke-muted" />
+                        <XAxis dataKey="month" className="text-xs" />
+                        <YAxis className="text-xs" />
+                        <Tooltip 
+                          contentStyle={{ 
+                            backgroundColor: 'hsl(var(--card))', 
+                            border: '1px solid hsl(var(--border))',
+                            borderRadius: '8px'
+                          }} 
+                        />
+                        <Legend />
+                        <Line type="monotone" dataKey="reports" stroke="hsl(var(--primary))" strokeWidth={2} name="Reports" />
+                        <Line type="monotone" dataKey="tests" stroke="hsl(var(--secondary))" strokeWidth={2} name="Water Tests" />
+                        <Line type="monotone" dataKey="alerts" stroke="hsl(var(--destructive))" strokeWidth={2} name="Alerts" />
+                      </LineChart>
+                    </ResponsiveContainer>
                   </CardContent>
                 </Card>
               </div>
@@ -153,8 +197,55 @@ const Dashboard = () => {
                 <CardTitle className="text-lg font-semibold">Active Locations</CardTitle>
               </CardHeader>
               <CardContent>
-                <div className="h-80 flex items-center justify-center bg-muted/30 rounded-lg border-2 border-dashed border-muted">
-                  <p className="text-muted-foreground">Interactive map area</p>
+                <div className="h-80 bg-gradient-to-br from-primary/5 to-secondary/5 rounded-lg border border-border relative overflow-hidden">
+                  {/* Simple map visualization */}
+                  <div className="absolute inset-0 opacity-10">
+                    <svg width="100%" height="100%" xmlns="http://www.w3.org/2000/svg">
+                      <defs>
+                        <pattern id="grid" width="40" height="40" patternUnits="userSpaceOnUse">
+                          <path d="M 40 0 L 0 0 0 40" fill="none" stroke="currentColor" strokeWidth="0.5"/>
+                        </pattern>
+                      </defs>
+                      <rect width="100%" height="100%" fill="url(#grid)" />
+                    </svg>
+                  </div>
+                  
+                  {/* Location markers */}
+                  {mapLocations.map((location) => (
+                    <div
+                      key={location.id}
+                      className="absolute group cursor-pointer"
+                      style={{ left: `${location.lng}%`, top: `${location.lat}%` }}
+                    >
+                      <div className={`w-4 h-4 rounded-full animate-pulse ${
+                        location.type === 'water' ? 'bg-secondary' :
+                        location.type === 'health' ? 'bg-destructive' :
+                        'bg-success'
+                      } ${location.status === 'alert' ? 'ring-2 ring-destructive' : ''}`}>
+                        <div className="absolute inset-0 rounded-full animate-ping opacity-75"></div>
+                      </div>
+                      <div className="absolute left-6 top-0 bg-card border border-border rounded-lg px-3 py-2 shadow-lg opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap z-10">
+                        <p className="text-xs font-semibold">{location.name}</p>
+                        <p className="text-xs text-muted-foreground capitalize">{location.type} • {location.status}</p>
+                      </div>
+                    </div>
+                  ))}
+                  
+                  {/* Legend */}
+                  <div className="absolute bottom-4 left-4 bg-card/90 backdrop-blur-sm border border-border rounded-lg px-4 py-3 space-y-2">
+                    <div className="flex items-center gap-2">
+                      <div className="w-3 h-3 rounded-full bg-secondary"></div>
+                      <span className="text-xs">Water Sites</span>
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <div className="w-3 h-3 rounded-full bg-destructive"></div>
+                      <span className="text-xs">Health Centers</span>
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <div className="w-3 h-3 rounded-full bg-success"></div>
+                      <span className="text-xs">Climate Stations</span>
+                    </div>
+                  </div>
                 </div>
               </CardContent>
             </Card>
