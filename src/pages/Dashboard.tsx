@@ -1,38 +1,36 @@
-import { Activity, Droplet, Users, AlertCircle, Map, Settings, FileText, Bell, Search, LogOut } from "lucide-react";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
+import { Activity, Droplet, Users, AlertCircle, FileText, TrendingUp, TrendingDown } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import KPICard from "@/components/KPICard";
 import ActivityFeed from "@/components/ActivityFeed";
-import { Link } from "react-router-dom";
-import { LineChart, Line, BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Legend } from "recharts";
-import { useState, useEffect } from "react";
+import { DashboardLayout } from "@/components/DashboardLayout";
+import { LineChart, Line, BarChart, Bar, AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Legend } from "recharts";
 
 const Dashboard = () => {
-  const [userName, setUserName] = useState("John Doe");
-  
-  useEffect(() => {
-    const storedName = localStorage.getItem("userName");
-    if (storedName) {
-      setUserName(storedName);
-    }
-  }, []);
-
-  const navItems = [
-    { icon: Activity, label: "Dashboard", active: true, path: "/dashboard" },
-    { icon: FileText, label: "Data Collection", active: false, path: "/dashboard" },
-    { icon: Map, label: "Maps", active: false, path: "/dashboard" },
-    { icon: AlertCircle, label: "Alerts", active: false, path: "/dashboard" },
-    { icon: Settings, label: "Settings", active: false, path: "/dashboard" },
-  ];
 
   const chartData = [
-    { month: "Jan", reports: 65, tests: 45, alerts: 12 },
-    { month: "Feb", reports: 78, tests: 52, alerts: 8 },
-    { month: "Mar", reports: 90, tests: 61, alerts: 15 },
-    { month: "Apr", reports: 81, tests: 58, alerts: 10 },
-    { month: "May", reports: 95, tests: 70, alerts: 6 },
-    { month: "Jun", reports: 105, tests: 82, alerts: 9 },
+    { month: "Jan", reports: 65, tests: 45, alerts: 12, completed: 58 },
+    { month: "Feb", reports: 78, tests: 52, alerts: 8, completed: 70 },
+    { month: "Mar", reports: 90, tests: 61, alerts: 15, completed: 82 },
+    { month: "Apr", reports: 81, tests: 58, alerts: 10, completed: 75 },
+    { month: "May", reports: 95, tests: 70, alerts: 6, completed: 88 },
+    { month: "Jun", reports: 105, tests: 82, alerts: 9, completed: 98 },
+  ];
+
+  const teamPerformanceData = [
+    { team: "Team A", completed: 145, pending: 23 },
+    { team: "Team B", completed: 132, pending: 18 },
+    { team: "Team C", completed: 128, pending: 15 },
+    { team: "Team D", completed: 118, pending: 22 },
+    { team: "Team E", completed: 105, pending: 12 },
+  ];
+
+  const areaChartData = [
+    { month: "Jan", water: 120, health: 85, climate: 65 },
+    { month: "Feb", water: 145, health: 98, climate: 78 },
+    { month: "Mar", water: 168, health: 112, climate: 89 },
+    { month: "Apr", water: 152, health: 125, climate: 95 },
+    { month: "May", water: 185, health: 142, climate: 108 },
+    { month: "Jun", water: 210, health: 165, climate: 125 },
   ];
 
   const mapLocations = [
@@ -44,79 +42,8 @@ const Dashboard = () => {
   ];
 
   return (
-    <div className="min-h-screen flex bg-background">
-      {/* Sidebar */}
-      <aside className="w-64 bg-sidebar border-r border-sidebar-border flex flex-col">
-        <div className="p-6 border-b border-sidebar-border">
-          <div className="flex items-center gap-3">
-            <div className="w-10 h-10 bg-gradient-hero rounded-lg flex items-center justify-center">
-              <Activity className="h-5 w-5 text-primary-foreground" />
-            </div>
-            <div>
-              <h1 className="font-bold text-lg text-sidebar-foreground">TerraTrack</h1>
-              <p className="text-xs text-muted-foreground">Field Dashboard</p>
-            </div>
-          </div>
-        </div>
-
-        <nav className="flex-1 p-4 space-y-1">
-          {navItems.map((item) => (
-            <Link
-              key={item.label}
-              to={item.path}
-              className={`w-full flex items-center gap-3 px-4 py-3 rounded-lg transition-colors ${
-                item.active
-                  ? "bg-sidebar-accent text-sidebar-accent-foreground font-medium"
-                  : "text-sidebar-foreground hover:bg-sidebar-accent/50"
-              }`}
-            >
-              <item.icon className="h-5 w-5" />
-              <span className="text-sm">{item.label}</span>
-            </Link>
-          ))}
-        </nav>
-
-        <div className="p-4 border-t border-sidebar-border">
-          <div className="flex items-center gap-3 px-4 py-3">
-            <div className="w-10 h-10 bg-primary/10 rounded-full flex items-center justify-center">
-              <span className="text-sm font-semibold text-primary">JD</span>
-            </div>
-            <div className="flex-1">
-              <p className="text-sm font-medium text-sidebar-foreground">{userName}</p>
-              <p className="text-xs text-muted-foreground">Field Agent</p>
-            </div>
-          </div>
-        </div>
-      </aside>
-
-      {/* Main Content */}
-      <div className="flex-1 flex flex-col">
-        {/* Top Bar */}
-        <header className="h-16 border-b border-border bg-card px-6 flex items-center justify-between">
-          <div className="flex-1 max-w-md">
-            <div className="relative">
-              <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-              <Input
-                placeholder="Search projects, data, locations..."
-                className="pl-10 bg-background"
-              />
-            </div>
-          </div>
-          <div className="flex items-center gap-3">
-            <Button variant="ghost" size="icon">
-              <Bell className="h-5 w-5" />
-            </Button>
-            <Link to="/">
-              <Button variant="ghost" size="icon">
-                <LogOut className="h-5 w-5" />
-              </Button>
-            </Link>
-          </div>
-        </header>
-
-        {/* Dashboard Content */}
-        <main className="flex-1 p-6 overflow-auto">
-          <div className="space-y-6 animate-fade-in">
+    <DashboardLayout>
+      <div className="space-y-6 animate-fade-in">
             {/* Header */}
             <div>
               <h2 className="text-3xl font-bold text-foreground mb-2">Dashboard Overview</h2>
@@ -160,34 +87,84 @@ const Dashboard = () => {
             </div>
 
             {/* Charts and Activity */}
-            <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-              <div className="lg:col-span-2">
-                <Card className="shadow-card h-full">
-                  <CardHeader>
-                    <CardTitle className="text-lg font-semibold">Data Collection Trends</CardTitle>
-                  </CardHeader>
-                  <CardContent>
-                    <ResponsiveContainer width="100%" height={300}>
-                      <LineChart data={chartData}>
-                        <CartesianGrid strokeDasharray="3 3" className="stroke-muted" />
-                        <XAxis dataKey="month" className="text-xs" />
-                        <YAxis className="text-xs" />
-                        <Tooltip 
-                          contentStyle={{ 
-                            backgroundColor: 'hsl(var(--card))', 
-                            border: '1px solid hsl(var(--border))',
-                            borderRadius: '8px'
-                          }} 
-                        />
-                        <Legend />
-                        <Line type="monotone" dataKey="reports" stroke="hsl(var(--primary))" strokeWidth={2} name="Reports" />
-                        <Line type="monotone" dataKey="tests" stroke="hsl(var(--secondary))" strokeWidth={2} name="Water Tests" />
-                        <Line type="monotone" dataKey="alerts" stroke="hsl(var(--destructive))" strokeWidth={2} name="Alerts" />
-                      </LineChart>
-                    </ResponsiveContainer>
-                  </CardContent>
-                </Card>
-              </div>
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+              <Card className="shadow-card">
+                <CardHeader>
+                  <CardTitle className="text-lg font-semibold">Data Collection Trends</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <ResponsiveContainer width="100%" height={300}>
+                    <LineChart data={chartData}>
+                      <CartesianGrid strokeDasharray="3 3" className="stroke-muted" />
+                      <XAxis dataKey="month" className="text-xs" />
+                      <YAxis className="text-xs" />
+                      <Tooltip 
+                        contentStyle={{ 
+                          backgroundColor: 'hsl(var(--card))', 
+                          border: '1px solid hsl(var(--border))',
+                          borderRadius: '8px'
+                        }} 
+                      />
+                      <Legend />
+                      <Line type="monotone" dataKey="reports" stroke="hsl(var(--primary))" strokeWidth={2} name="Reports" />
+                      <Line type="monotone" dataKey="tests" stroke="hsl(var(--secondary))" strokeWidth={2} name="Water Tests" />
+                      <Line type="monotone" dataKey="alerts" stroke="hsl(var(--destructive))" strokeWidth={2} name="Alerts" />
+                    </LineChart>
+                  </ResponsiveContainer>
+                </CardContent>
+              </Card>
+
+              <Card className="shadow-card">
+                <CardHeader>
+                  <CardTitle className="text-lg font-semibold">Team Performance</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <ResponsiveContainer width="100%" height={300}>
+                    <BarChart data={teamPerformanceData}>
+                      <CartesianGrid strokeDasharray="3 3" className="stroke-muted" />
+                      <XAxis dataKey="team" className="text-xs" />
+                      <YAxis className="text-xs" />
+                      <Tooltip 
+                        contentStyle={{ 
+                          backgroundColor: 'hsl(var(--card))', 
+                          border: '1px solid hsl(var(--border))',
+                          borderRadius: '8px'
+                        }} 
+                      />
+                      <Legend />
+                      <Bar dataKey="completed" fill="hsl(var(--success))" name="Completed" />
+                      <Bar dataKey="pending" fill="hsl(var(--primary))" name="Pending" />
+                    </BarChart>
+                  </ResponsiveContainer>
+                </CardContent>
+              </Card>
+
+              <Card className="shadow-card">
+                <CardHeader>
+                  <CardTitle className="text-lg font-semibold">Project Categories Growth</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <ResponsiveContainer width="100%" height={300}>
+                    <AreaChart data={areaChartData}>
+                      <CartesianGrid strokeDasharray="3 3" className="stroke-muted" />
+                      <XAxis dataKey="month" className="text-xs" />
+                      <YAxis className="text-xs" />
+                      <Tooltip 
+                        contentStyle={{ 
+                          backgroundColor: 'hsl(var(--card))', 
+                          border: '1px solid hsl(var(--border))',
+                          borderRadius: '8px'
+                        }} 
+                      />
+                      <Legend />
+                      <Area type="monotone" dataKey="water" stackId="1" stroke="hsl(var(--secondary))" fill="hsl(var(--secondary))" fillOpacity={0.6} name="Water" />
+                      <Area type="monotone" dataKey="health" stackId="1" stroke="hsl(var(--destructive))" fill="hsl(var(--destructive))" fillOpacity={0.6} name="Health" />
+                      <Area type="monotone" dataKey="climate" stackId="1" stroke="hsl(var(--success))" fill="hsl(var(--success))" fillOpacity={0.6} name="Climate" />
+                    </AreaChart>
+                  </ResponsiveContainer>
+                </CardContent>
+              </Card>
+
               <ActivityFeed />
             </div>
 
@@ -249,10 +226,8 @@ const Dashboard = () => {
                 </div>
               </CardContent>
             </Card>
-          </div>
-        </main>
       </div>
-    </div>
+    </DashboardLayout>
   );
 };
 
