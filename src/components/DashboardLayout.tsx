@@ -1,9 +1,11 @@
-import { Activity, FileText, Map, AlertCircle, Settings, Users, BarChart3, Bell, Search, LogOut } from "lucide-react";
+import { Activity, FileText, Map, AlertCircle, Settings, Users, BarChart3, Bell, Search, LogOut, Database } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Link, useLocation } from "react-router-dom";
 import { useState, useEffect } from "react";
 import { ThemeToggle } from "@/components/ThemeToggle";
+import { Avatar, AvatarFallback } from "@/components/ui/avatar";
+import OnlineStatusIndicator from "@/components/OnlineStatusIndicator";
 
 interface DashboardLayoutProps {
   children: React.ReactNode;
@@ -40,8 +42,8 @@ export const DashboardLayout = ({ children }: DashboardLayoutProps) => {
               <Activity className="h-5 w-5 text-primary-foreground" />
             </div>
             <div>
-              <h1 className="font-bold text-lg text-sidebar-foreground">TerraTrack</h1>
-              <p className="text-xs text-muted-foreground">Field Dashboard</p>
+              <h1 className="font-heading font-bold text-lg text-sidebar-foreground">EASY TRACK</h1>
+              <p className="text-xs text-muted-foreground">Data for Life</p>
             </div>
           </div>
         </div>
@@ -95,9 +97,23 @@ export const DashboardLayout = ({ children }: DashboardLayoutProps) => {
             </div>
           </div>
           <div className="flex items-center gap-3">
+            <OnlineStatusIndicator />
+            <div className="flex items-center gap-1 px-2">
+              <Avatar className="h-8 w-8 ring-2 ring-success status-online">
+                <AvatarFallback className="bg-primary text-primary-foreground text-xs">JD</AvatarFallback>
+              </Avatar>
+              <Avatar className="h-8 w-8 ring-2 ring-success status-online -ml-2">
+                <AvatarFallback className="bg-secondary text-secondary-foreground text-xs">SM</AvatarFallback>
+              </Avatar>
+              <Avatar className="h-8 w-8 ring-2 ring-success status-online -ml-2">
+                <AvatarFallback className="bg-accent text-accent-foreground text-xs">AK</AvatarFallback>
+              </Avatar>
+              <span className="text-xs text-muted-foreground ml-1">+5</span>
+            </div>
             <ThemeToggle />
-            <Button variant="ghost" size="icon">
+            <Button variant="ghost" size="icon" className="relative">
               <Bell className="h-5 w-5" />
+              <span className="absolute top-1 right-1 w-2 h-2 bg-alert rounded-full"></span>
             </Button>
             <Link to="/">
               <Button variant="ghost" size="icon">

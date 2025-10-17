@@ -8,99 +8,142 @@ All colors MUST be HSL.
 
 @layer base {
   :root {
-    --background: 180 33% 97%;
-    --foreground: 180 15% 15%;
+    /* EASY TRACK Premium Design System - Light Mode */
+    
+    /* Backgrounds */
+    --background: 180 33% 98%;
+    --foreground: 180 15% 10%;
 
     --card: 0 0% 100%;
-    --card-foreground: 180 15% 15%;
+    --card-foreground: 180 15% 10%;
 
     --popover: 0 0% 100%;
-    --popover-foreground: 180 15% 15%;
+    --popover-foreground: 180 15% 10%;
 
-    --primary: 180 100% 25%;
+    /* Primary: Deep Teal (#0F5959) */
+    --primary: 180 71% 20%;
     --primary-foreground: 0 0% 100%;
 
-    --secondary: 186 56% 50%;
+    /* Secondary: Hope Blue (#2A9D8F) */
+    --secondary: 172 57% 40%;
     --secondary-foreground: 0 0% 100%;
 
-    --success: 123 39% 47%;
+    /* Success: Earth Green (#4CAF50) */
+    --success: 122 39% 49%;
     --success-foreground: 0 0% 100%;
 
-    --muted: 180 20% 95%;
+    /* Warning: Amber (#F4A261) */
+    --warning: 26 89% 61%;
+    --warning-foreground: 180 15% 10%;
+
+    /* Alert: Coral (#E76F51) */
+    --alert: 13 77% 61%;
+    --alert-foreground: 0 0% 100%;
+
+    --muted: 180 15% 95%;
     --muted-foreground: 180 10% 45%;
 
-    --accent: 186 56% 50%;
+    --accent: 172 57% 40%;
     --accent-foreground: 0 0% 100%;
 
-    --destructive: 0 84.2% 60.2%;
+    --destructive: 13 77% 61%;
     --destructive-foreground: 0 0% 100%;
 
-    --border: 180 20% 90%;
-    --input: 180 20% 90%;
-    --ring: 180 100% 25%;
+    /* Subtle Borders (#E0E6E5) */
+    --border: 180 15% 90%;
+    --input: 180 15% 90%;
+    --ring: 180 71% 20%;
 
-    --radius: 0.75rem;
+    --radius: 0.5rem;
 
-    --gradient-hero: linear-gradient(135deg, hsl(180 100% 25%), hsl(186 56% 50%));
-    --gradient-card: linear-gradient(180deg, hsl(0 0% 100%), hsl(180 33% 98%));
-    --shadow-soft: 0 4px 20px -2px hsl(180 100% 25% / 0.08);
-    --shadow-card: 0 2px 12px -2px hsl(180 100% 25% / 0.06);
+    /* Gradients */
+    --gradient-hero: linear-gradient(135deg, hsl(180 71% 20%), hsl(172 57% 40%));
+    --gradient-card: linear-gradient(145deg, hsl(0 0% 100%), hsl(180 20% 97%));
+    --gradient-accent: linear-gradient(120deg, hsl(172 57% 40%), hsl(122 39% 49%));
+    
+    /* Neumorphic Shadows */
+    --shadow-soft: 6px 6px 12px hsl(180 15% 85%), -6px -6px 12px hsl(0 0% 100%);
+    --shadow-card: 4px 4px 8px hsl(180 15% 87%), -4px -4px 8px hsl(0 0% 100%);
+    --shadow-elevated: 8px 8px 16px hsl(180 15% 82%), -8px -8px 16px hsl(0 0% 100%);
+    --shadow-inset: inset 4px 4px 8px hsl(180 15% 87%), inset -4px -4px 8px hsl(0 0% 100%);
 
-    --sidebar-background: 180 25% 98%;
-    --sidebar-foreground: 180 15% 15%;
-    --sidebar-primary: 180 100% 25%;
+    /* Sidebar */
+    --sidebar-background: 0 0% 100%;
+    --sidebar-foreground: 180 15% 10%;
+    --sidebar-primary: 180 71% 20%;
     --sidebar-primary-foreground: 0 0% 100%;
-    --sidebar-accent: 180 20% 95%;
-    --sidebar-accent-foreground: 180 15% 15%;
-    --sidebar-border: 180 20% 92%;
-    --sidebar-ring: 180 100% 25%;
+    --sidebar-accent: 180 15% 95%;
+    --sidebar-accent-foreground: 180 15% 10%;
+    --sidebar-border: 180 15% 92%;
+    --sidebar-ring: 180 71% 20%;
   }
 
   .dark {
-    --background: 180 20% 8%;
+    /* EASY TRACK Premium Design System - Dark Mode */
+    
+    /* Backgrounds (#0F1F1F and variations) */
+    --background: 180 35% 6%;
     --foreground: 180 10% 95%;
 
-    --card: 180 15% 12%;
+    --card: 180 25% 10%;
     --card-foreground: 180 10% 95%;
 
-    --popover: 180 15% 12%;
+    --popover: 180 25% 10%;
     --popover-foreground: 180 10% 95%;
 
-    --primary: 186 56% 50%;
-    --primary-foreground: 180 20% 8%;
+    /* Primary: Hope Blue (brighter in dark) */
+    --primary: 172 57% 50%;
+    --primary-foreground: 180 35% 6%;
 
-    --secondary: 180 100% 25%;
+    /* Secondary: Deep Teal */
+    --secondary: 180 71% 25%;
     --secondary-foreground: 0 0% 100%;
 
-    --success: 123 39% 47%;
-    --success-foreground: 0 0% 100%;
+    /* Success: Earth Green */
+    --success: 122 39% 55%;
+    --success-foreground: 180 35% 6%;
 
-    --muted: 180 15% 18%;
+    /* Warning: Amber */
+    --warning: 26 89% 65%;
+    --warning-foreground: 180 35% 6%;
+
+    /* Alert: Coral */
+    --alert: 13 77% 65%;
+    --alert-foreground: 0 0% 100%;
+
+    --muted: 180 20% 15%;
     --muted-foreground: 180 10% 65%;
 
-    --accent: 186 56% 50%;
-    --accent-foreground: 180 20% 8%;
+    --accent: 172 57% 50%;
+    --accent-foreground: 180 35% 6%;
 
-    --destructive: 0 62.8% 30.6%;
+    --destructive: 13 77% 65%;
     --destructive-foreground: 0 0% 100%;
 
-    --border: 180 15% 18%;
-    --input: 180 15% 18%;
-    --ring: 186 56% 50%;
+    --border: 180 20% 18%;
+    --input: 180 20% 18%;
+    --ring: 172 57% 50%;
 
-    --gradient-hero: linear-gradient(135deg, hsl(186 56% 50%), hsl(180 100% 25%));
-    --gradient-card: linear-gradient(180deg, hsl(180 15% 12%), hsl(180 15% 10%));
-    --shadow-soft: 0 4px 20px -2px hsl(186 56% 50% / 0.12);
-    --shadow-card: 0 2px 12px -2px hsl(186 56% 50% / 0.08);
+    /* Gradients - Dark Mode */
+    --gradient-hero: linear-gradient(135deg, hsl(172 57% 50%), hsl(180 71% 25%));
+    --gradient-card: linear-gradient(145deg, hsl(180 25% 10%), hsl(180 30% 8%));
+    --gradient-accent: linear-gradient(120deg, hsl(172 57% 50%), hsl(122 39% 55%));
+    
+    /* Dark Mode Shadows (softer, more subtle) */
+    --shadow-soft: 6px 6px 12px hsl(180 35% 3%), -6px -6px 12px hsl(180 25% 13%);
+    --shadow-card: 4px 4px 8px hsl(180 35% 4%), -4px -4px 8px hsl(180 25% 12%);
+    --shadow-elevated: 8px 8px 16px hsl(180 35% 2%), -8px -8px 16px hsl(180 25% 14%);
+    --shadow-inset: inset 4px 4px 8px hsl(180 35% 4%), inset -4px -4px 8px hsl(180 25% 12%);
 
-    --sidebar-background: 180 15% 10%;
+    /* Sidebar - Dark Mode */
+    --sidebar-background: 180 30% 8%;
     --sidebar-foreground: 180 10% 95%;
-    --sidebar-primary: 186 56% 50%;
-    --sidebar-primary-foreground: 180 20% 8%;
-    --sidebar-accent: 180 15% 18%;
+    --sidebar-primary: 172 57% 50%;
+    --sidebar-primary-foreground: 180 35% 6%;
+    --sidebar-accent: 180 20% 15%;
     --sidebar-accent-foreground: 180 10% 95%;
-    --sidebar-border: 180 15% 16%;
-    --sidebar-ring: 186 56% 50%;
+    --sidebar-border: 180 20% 16%;
+    --sidebar-ring: 172 57% 50%;
   }
 }
 
@@ -111,6 +154,75 @@ All colors MUST be HSL.
 
   body {
     @apply bg-background text-foreground;
-    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', sans-serif;
+    font-feature-settings: "kern", "liga", "clig", "calt";
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  h1, h2, h3 {
+    font-family: 'Poppins', 'Inter', sans-serif;
+    font-weight: 600;
+    letter-spacing: -0.02em;
+  }
+
+  h1 {
+    @apply text-4xl md:text-5xl;
+  }
+
+  h2 {
+    @apply text-3xl md:text-4xl;
+  }
+
+  h3 {
+    @apply text-2xl md:text-3xl;
+  }
+}
+
+@layer utilities {
+  .text-balance {
+    text-wrap: balance;
+  }
+
+  /* Neumorphic utilities */
+  .neumorphic {
+    box-shadow: var(--shadow-card);
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  .neumorphic:hover {
+    box-shadow: var(--shadow-elevated);
+    transform: translateY(-2px);
+  }
+
+  .neumorphic-inset {
+    box-shadow: var(--shadow-inset);
+  }
+
+  /* Glassmorphism */
+  .glass {
+    background: hsl(var(--card) / 0.7);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border: 1px solid hsl(var(--border) / 0.5);
+  }
+
+  /* Status indicators */
+  .status-online {
+    @apply relative;
+  }
+
+  .status-online::before {
+    content: '';
+    @apply absolute top-0 right-0 w-3 h-3 bg-success rounded-full border-2 border-background;
+  }
+
+  .status-offline {
+    @apply relative;
+  }
+
+  .status-offline::before {
+    content: '';
+    @apply absolute top-0 right-0 w-3 h-3 bg-warning rounded-full border-2 border-background;
   }
 }

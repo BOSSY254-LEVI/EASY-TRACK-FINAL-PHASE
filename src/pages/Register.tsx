@@ -30,14 +30,14 @@ const Register = () => {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-background px-4 py-12">
-      <Card className="w-full max-w-md shadow-card">
+    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-background via-secondary/5 to-success/5 px-4 py-12">
+      <Card className="w-full max-w-md neumorphic">
         <CardHeader className="space-y-3 text-center">
-          <div className="mx-auto w-14 h-14 bg-gradient-hero rounded-xl flex items-center justify-center mb-2">
-            <Activity className="h-7 w-7 text-primary-foreground" />
+          <div className="mx-auto w-16 h-16 bg-gradient-hero rounded-2xl flex items-center justify-center mb-2 shadow-elevated">
+            <Activity className="h-8 w-8 text-primary-foreground" />
           </div>
-          <CardTitle className="text-2xl font-bold">Create Your Account</CardTitle>
-          <CardDescription>Join field teams making an impact</CardDescription>
+          <CardTitle className="text-3xl font-heading font-bold">Create Your Account</CardTitle>
+          <CardDescription className="text-base">Join field teams making an impact worldwide</CardDescription>
         </CardHeader>
         <CardContent>
           <form onSubmit={handleSubmit} className="space-y-4">

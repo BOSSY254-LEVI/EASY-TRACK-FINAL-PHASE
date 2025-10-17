@@ -4,8 +4,18 @@ import KPICard from "@/components/KPICard";
 import ActivityFeed from "@/components/ActivityFeed";
 import { DashboardLayout } from "@/components/DashboardLayout";
 import { LineChart, Line, BarChart, Bar, AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Legend } from "recharts";
+import AIInsightBanner from "@/components/AIInsightBanner";
+import { useState, useEffect } from "react";
 
 const Dashboard = () => {
+  const [userName, setUserName] = useState("Field Agent");
+  
+  useEffect(() => {
+    const storedName = localStorage.getItem("userName");
+    if (storedName) {
+      setUserName(storedName.split(' ')[0]); // First name only
+    }
+  }, []);
 
   const chartData = [
     { month: "Jan", reports: 65, tests: 45, alerts: 12, completed: 58 },
@@ -41,14 +51,22 @@ const Dashboard = () => {
     { id: 5, name: "Lagos District", lat: 55, lng: 20, type: "health", status: "active" },
   ];
 
+  const currentHour = new Date().getHours();
+  const greeting = currentHour < 12 ? "Good Morning" : currentHour < 18 ? "Good Afternoon" : "Good Evening";
+
   return (
     <DashboardLayout>
       <div className="space-y-6 animate-fade-in">
-            {/* Header */}
-            <div>
-              <h2 className="text-3xl font-bold text-foreground mb-2">Dashboard Overview</h2>
-              <p className="text-muted-foreground">Real-time insights from your field operations</p>
+            {/* Welcome Header */}
+            <div className="space-y-2">
+              <h2 className="text-4xl font-heading font-bold text-foreground tracking-tight">
+                {greeting}, {userName} 👋
+              </h2>
+              <p className="text-lg text-muted-foreground">Here's your mission control for today</p>
             </div>
+
+            {/* AI Insights Banner */}
+            <AIInsightBanner />
 
             {/* KPI Cards */}
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
@@ -88,9 +106,9 @@ const Dashboard = () => {
 
             {/* Charts and Activity */}
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-              <Card className="shadow-card">
-                <CardHeader>
-                  <CardTitle className="text-lg font-semibold">Data Collection Trends</CardTitle>
+              <Card className="neumorphic">
+                <CardHeader className="border-b border-border">
+                  <CardTitle className="text-lg font-heading font-semibold">Data Collection Trends</CardTitle>
                 </CardHeader>
                 <CardContent>
                   <ResponsiveContainer width="100%" height={300}>
@@ -114,9 +132,9 @@ const Dashboard = () => {
                 </CardContent>
               </Card>
 
-              <Card className="shadow-card">
-                <CardHeader>
-                  <CardTitle className="text-lg font-semibold">Team Performance</CardTitle>
+              <Card className="neumorphic">
+                <CardHeader className="border-b border-border">
+                  <CardTitle className="text-lg font-heading font-semibold">Team Performance</CardTitle>
                 </CardHeader>
                 <CardContent>
                   <ResponsiveContainer width="100%" height={300}>
@@ -139,9 +157,9 @@ const Dashboard = () => {
                 </CardContent>
               </Card>
 
-              <Card className="shadow-card">
-                <CardHeader>
-                  <CardTitle className="text-lg font-semibold">Project Categories Growth</CardTitle>
+              <Card className="neumorphic">
+                <CardHeader className="border-b border-border">
+                  <CardTitle className="text-lg font-heading font-semibold">Project Categories Growth</CardTitle>
                 </CardHeader>
                 <CardContent>
                   <ResponsiveContainer width="100%" height={300}>
@@ -169,9 +187,9 @@ const Dashboard = () => {
             </div>
 
             {/* Map Preview */}
-            <Card className="shadow-card">
-              <CardHeader>
-                <CardTitle className="text-lg font-semibold">Active Locations</CardTitle>
+            <Card className="neumorphic">
+              <CardHeader className="border-b border-border">
+                <CardTitle className="text-lg font-heading font-semibold">Active Locations - Live Map</CardTitle>
               </CardHeader>
               <CardContent>
                 <div className="h-80 bg-gradient-to-br from-primary/5 to-secondary/5 rounded-lg border border-border relative overflow-hidden">

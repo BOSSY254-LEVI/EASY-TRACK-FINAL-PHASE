@@ -19,14 +19,14 @@ const Login = () => {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-background px-4">
-      <Card className="w-full max-w-md shadow-card">
+    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-background via-primary/5 to-secondary/5 px-4">
+      <Card className="w-full max-w-md neumorphic">
         <CardHeader className="space-y-3 text-center">
-          <div className="mx-auto w-14 h-14 bg-gradient-hero rounded-xl flex items-center justify-center mb-2">
-            <Activity className="h-7 w-7 text-primary-foreground" />
+          <div className="mx-auto w-16 h-16 bg-gradient-hero rounded-2xl flex items-center justify-center mb-2 shadow-elevated">
+            <Activity className="h-8 w-8 text-primary-foreground" />
           </div>
-          <CardTitle className="text-2xl font-bold">Welcome to TerraTrack</CardTitle>
-          <CardDescription>Sign in to access your dashboard</CardDescription>
+          <CardTitle className="text-3xl font-heading font-bold">Welcome to EASY TRACK</CardTitle>
+          <CardDescription className="text-base">Sign in to access your mission control</CardDescription>
         </CardHeader>
         <CardContent>
           <form onSubmit={handleSubmit} className="space-y-4">

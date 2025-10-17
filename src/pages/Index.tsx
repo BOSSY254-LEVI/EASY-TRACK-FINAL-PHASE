@@ -60,7 +60,7 @@ const Index = () => {
               <Activity className="h-5 w-5 text-primary-foreground" />
             </div>
             <div>
-              <h1 className="font-bold text-xl text-foreground">TerraTrack</h1>
+              <h1 className="font-heading font-bold text-xl text-foreground">EASY TRACK</h1>
               <p className="text-xs text-muted-foreground">Data for Life. Insight for Action.</p>
             </div>
           </div>
@@ -85,14 +85,14 @@ const Index = () => {
                 <MapPin className="h-4 w-4 text-primary" />
                 <span className="text-sm font-medium text-primary">Empowering Field Teams Worldwide</span>
               </div>
-              <h1 className="text-5xl lg:text-6xl font-bold leading-tight text-foreground">
+              <h1 className="text-5xl lg:text-6xl font-heading font-bold leading-tight text-foreground">
                 Data for Life.
                 <br />
                 <span className="bg-gradient-hero bg-clip-text text-transparent">Insight for Action.</span>
               </h1>
-              <p className="text-xl text-muted-foreground leading-relaxed">
-                Collaborative data dashboard for field teams working in health, water, and climate action across
-                Africa and developing regions.
+              <p className="text-xl text-muted-foreground leading-relaxed text-balance">
+                World-class collaborative dashboard empowering field teams in health, water, and climate action 
+                across Africa and developing regions with data-driven insights.
               </p>
               <div className="flex flex-wrap gap-4">
                 <Link to="/register">
@@ -137,23 +137,23 @@ const Index = () => {
       <section className="py-20 bg-background">
         <div className="max-w-7xl mx-auto px-6">
           <div className="text-center mb-16 space-y-4">
-            <h2 className="text-4xl font-bold text-foreground">Powerful Features for Impact</h2>
-            <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
-              Everything you need to collect, analyze, and act on field data with confidence.
+            <h2 className="text-4xl font-heading font-bold text-foreground">Powerful Features for Impact</h2>
+            <p className="text-xl text-muted-foreground max-w-2xl mx-auto text-balance">
+              Everything you need to collect, analyze, and act on field data with absolute confidence.
             </p>
           </div>
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
             {features.map((feature, index) => (
               <div
                 key={index}
-                className="group p-6 rounded-xl border border-border bg-card shadow-card hover:shadow-soft transition-all duration-200 animate-fade-in"
+                className="group p-6 rounded-xl border border-border bg-card neumorphic animate-fade-in"
                 style={{ animationDelay: `${index * 100}ms` }}
               >
-                <div className={`w-12 h-12 rounded-xl ${feature.color} flex items-center justify-center mb-4`}>
-                  <feature.icon className="h-6 w-6 text-primary-foreground" />
+                <div className={`w-14 h-14 rounded-xl ${feature.color} flex items-center justify-center mb-5 group-hover:scale-110 transition-transform duration-300 shadow-lg`}>
+                  <feature.icon className="h-7 w-7 text-primary-foreground" />
                 </div>
-                <h3 className="text-xl font-semibold text-foreground mb-2">{feature.title}</h3>
-                <p className="text-muted-foreground">{feature.description}</p>
+                <h3 className="text-xl font-heading font-semibold text-foreground mb-3">{feature.title}</h3>
+                <p className="text-muted-foreground leading-relaxed">{feature.description}</p>
               </div>
             ))}
           </div>
@@ -164,9 +164,9 @@ const Index = () => {
       <section className="relative py-20 overflow-hidden">
         <div className="absolute inset-0 bg-gradient-hero opacity-10" />
         <div className="max-w-4xl mx-auto px-6 text-center relative space-y-6">
-          <h2 className="text-4xl font-bold text-foreground">Ready to Make an Impact?</h2>
-          <p className="text-xl text-muted-foreground">
-            Join thousands of field agents and organizations using TerraTrack to drive meaningful change.
+          <h2 className="text-4xl font-heading font-bold text-foreground">Ready to Make an Impact?</h2>
+          <p className="text-xl text-muted-foreground text-balance">
+            Join thousands of field agents and organizations using EASY TRACK to drive meaningful change.
           </p>
           <div className="flex flex-wrap gap-4 justify-center">
             <Link to="/register">
@@ -187,7 +187,7 @@ const Index = () => {
       <footer className="border-t border-border bg-muted/30 py-8">
         <div className="max-w-7xl mx-auto px-6 text-center">
           <p className="text-sm text-muted-foreground">
-            © 2025 TerraTrack. Empowering communities with data for better health, water, and climate outcomes.
+            © 2025 EASY TRACK. Empowering communities with data for better health, water, and climate outcomes.
           </p>
         </div>
       </footer>
