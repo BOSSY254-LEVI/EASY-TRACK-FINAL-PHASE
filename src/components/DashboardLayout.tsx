@@ -1,4 +1,4 @@
-import { Activity, FileText, Map, AlertCircle, Settings, Users, BarChart3, Bell, Search, LogOut, Database } from "lucide-react";
+import { Activity, FileText, Map, AlertCircle, Settings, Users, BarChart3, Bell, Search, LogOut, Database, FolderOpen, Clock } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Link, useLocation } from "react-router-dom";
@@ -24,10 +24,13 @@ export const DashboardLayout = ({ children }: DashboardLayoutProps) => {
 
   const navItems = [
     { icon: Activity, label: "Dashboard", path: "/dashboard" },
+    { icon: FolderOpen, label: "Projects", path: "/projects" },
     { icon: BarChart3, label: "Reports", path: "/reports" },
     { icon: FileText, label: "Data Collection", path: "/data-collection" },
-    { icon: Users, label: "Team", path: "/team" },
+    { icon: Database, label: "Files", path: "/files" },
     { icon: Map, label: "Maps", path: "/maps" },
+    { icon: Clock, label: "Activities", path: "/activities" },
+    { icon: Users, label: "Team", path: "/team" },
     { icon: AlertCircle, label: "Alerts", path: "/alerts" },
     { icon: Settings, label: "Settings", path: "/settings" },
   ];

@@ -10,6 +10,13 @@ import Register from "./pages/Register";
 import Dashboard from "./pages/Dashboard";
 import Reports from "./pages/Reports";
 import Team from "./pages/Team";
+import Projects from "./pages/Projects";
+import DataCollection from "./pages/DataCollection";
+import Maps from "./pages/Maps";
+import Alerts from "./pages/Alerts";
+import Activities from "./pages/Activities";
+import Files from "./pages/Files";
+import Settings from "./pages/Settings";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -28,6 +35,13 @@ const App = () => (
             <Route path="/dashboard" element={<Dashboard />} />
             <Route path="/reports" element={<Reports />} />
             <Route path="/team" element={<Team />} />
+            <Route path="/projects" element={<Projects />} />
+            <Route path="/data-collection" element={<DataCollection />} />
+            <Route path="/maps" element={<Maps />} />
+            <Route path="/alerts" element={<Alerts />} />
+            <Route path="/activities" element={<Activities />} />
+            <Route path="/files" element={<Files />} />
+            <Route path="/settings" element={<Settings />} />
             {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
             <Route path="*" element={<NotFound />} />
           </Routes>
