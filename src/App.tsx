@@ -17,6 +17,7 @@ import Alerts from "./pages/Alerts";
 import Activities from "./pages/Activities";
 import Files from "./pages/Files";
 import Settings from "./pages/Settings";
+import Emergency from "./pages/Emergency";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();

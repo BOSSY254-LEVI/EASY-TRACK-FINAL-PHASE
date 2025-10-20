@@ -5,7 +5,9 @@ import { Button } from "@/components/ui/button";
 import { AlertTriangle, AlertCircle, Info, CheckCircle, Bell } from "lucide-react";
 
 const Alerts = () => {
-  const alerts = [
+  const { toast } = useToast();
+  const [selectedAlert, setSelectedAlert] = useState<any>(null);
+  const [alertsList, setAlertsList] = useState([
     {
       id: 1,
       type: "critical",
@@ -108,6 +110,48 @@ const Alerts = () => {
             </Card>
           ))}
         </div>
+
+        {/* Alert Details Dialog */}
+        <Dialog open={!!selectedAlert} onOpenChange={() => setSelectedAlert(null)}>
+          <DialogContent className="sm:max-w-[525px]">
+            <DialogHeader>
+              <DialogTitle className="flex items-center gap-2">
+                {selectedAlert?.severity === "critical" && <AlertTriangle className="h-5 w-5 text-critical" />}
+                {selectedAlert?.severity === "warning" && <AlertCircle className="h-5 w-5 text-alert" />}
+                {selectedAlert?.severity === "info" && <CheckCircle2 className="h-5 w-5 text-success" />}
+                {selectedAlert?.title}
+              </DialogTitle>
+              <DialogDescription>{selectedAlert?.time}</DialogDescription>
+            </DialogHeader>
+            <div className="space-y-4 py-4">
+              <div>
+                <h4 className="font-semibold mb-2">Description</h4>
+                <p className="text-muted-foreground">{selectedAlert?.description}</p>
+              </div>
+              <div>
+                <h4 className="font-semibold mb-2">Severity</h4>
+                <Badge variant={
+                  selectedAlert?.severity === "critical" ? "destructive" :
+                  selectedAlert?.severity === "warning" ? "default" : "outline"
+                }>
+                  {selectedAlert?.severity}
+                </Badge>
+              </div>
+              <div>
+                <h4 className="font-semibold mb-2">Status</h4>
+                <Badge variant="outline">{selectedAlert?.status}</Badge>
+              </div>
+              <div>
+                <h4 className="font-semibold mb-2">Recommended Actions</h4>
+                <ul className="list-disc list-inside text-muted-foreground space-y-1">
+                  <li>Review the affected data points</li>
+                  <li>Contact the field team for clarification</li>
+                  <li>Document any findings in the project log</li>
+                </ul>
+              </div>
+            </div>
+          </DialogContent>
+        </Dialog>
       </div>
     </DashboardLayout>
   );

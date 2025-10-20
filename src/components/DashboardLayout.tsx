@@ -1,4 +1,4 @@
-import { Activity, FileText, Map, AlertCircle, Settings, Users, BarChart3, Bell, Search, LogOut, Database, FolderOpen, Clock } from "lucide-react";
+import { Activity, FileText, Map, AlertCircle, Settings, Users, BarChart3, Bell, Search, LogOut, Database, FolderOpen, Clock, AlertTriangle } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Link, useLocation } from "react-router-dom";
@@ -13,12 +13,12 @@ interface DashboardLayoutProps {
 
 export const DashboardLayout = ({ children }: DashboardLayoutProps) => {
   const location = useLocation();
-  const [userName, setUserName] = useState("John Doe");
+  const [userName, setUserName] = useState("Field Agent");
   
   useEffect(() => {
     const storedName = localStorage.getItem("userName");
-    if (storedName) {
-      setUserName(storedName);
+    if (storedName && storedName.trim()) {
+      setUserName(storedName.trim());
     }
   }, []);
 
@@ -32,6 +32,7 @@ export const DashboardLayout = ({ children }: DashboardLayoutProps) => {
     { icon: Clock, label: "Activities", path: "/activities" },
     { icon: Users, label: "Team", path: "/team" },
     { icon: AlertCircle, label: "Alerts", path: "/alerts" },
+    { icon: AlertTriangle, label: "Emergency", path: "/emergency" },
     { icon: Settings, label: "Settings", path: "/settings" },
   ];
 

@@ -6,8 +6,33 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { useToast } from "@/hooks/use-toast";
-import { FileText, MapPin, Calendar, Save } from "lucide-react";
+import { FileText, MapPin, Calendar, Save, Navigation } from "lucide-react";
 import { useState } from "react";
+import { MapContainer, TileLayer, Marker, Popup, useMapEvents } from "react-leaflet";
+import "leaflet/dist/leaflet.css";
+import L from "leaflet";
+
+// Fix Leaflet default marker icon
+delete (L.Icon.Default.prototype as any)._getIconUrl;
+L.Icon.Default.mergeOptions({
+  iconRetinaUrl: "https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-icon-2x.png",
+  iconUrl: "https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-icon.png",
+  shadowUrl: "https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-shadow.png",
+});
+
+function LocationMarker({ position, setPosition }: any) {
+  useMapEvents({
+    click(e) {
+      setPosition([e.latlng.lat, e.latlng.lng]);
+    },
+  });
+
+  return position ? (
+    <Marker position={position}>
+      <Popup>Selected Location</Popup>
+    </Marker>
+  ) : null;
+}
 
 const DataCollection = () => {
   const { toast } = useToast();
@@ -17,6 +42,42 @@ const DataCollection = () => {
     location: "",
     description: "",
   });
+  const [mapPosition, setMapPosition] = useState<[number, number]>([6.5244, 3.3792]);
+  const [geolocating, setGeolocating] = useState(false);
+
+  const captureLocation = () => {
+    setGeolocating(true);
+    if (navigator.geolocation) {
+      navigator.geolocation.getCurrentPosition(
+        (position) => {
+          const { latitude, longitude } = position.coords;
+          const locationString = `${latitude.toFixed(6)}, ${longitude.toFixed(6)}`;
+          setFormData({ ...formData, location: locationString });
+          setMapPosition([latitude, longitude]);
+          setGeolocating(false);
+          toast({
+            title: "Location Captured",
+            description: locationString,
+          });
+        },
+        () => {
+          setGeolocating(false);
+          toast({
+            title: "Location Error",
+            description: "Unable to capture location. Please enter manually.",
+            variant: "destructive",
+          });
+        }
+      );
+    } else {
+      setGeolocating(false);
+      toast({
+        title: "Not Supported",
+        description: "Geolocation is not supported by your browser.",
+        variant: "destructive",
+      });
+    }
+  };
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -77,13 +138,35 @@ const DataCollection = () => {
                     <MapPin className="h-4 w-4" />
                     Location
                   </Label>
-                  <Input
-                    id="location"
-                    placeholder="GPS coordinates or place name"
-                    value={formData.location}
-                    onChange={(e) => setFormData({ ...formData, location: e.target.value })}
-                    required
-                  />
+                  <div className="flex gap-2">
+                    <Input
+                      id="location"
+                      placeholder="GPS coordinates or place name"
+                      value={formData.location}
+                      onChange={(e) => setFormData({ ...formData, location: e.target.value })}
+                      required
+                      className="flex-1"
+                    />
+                    <Button 
+                      type="button" 
+                      variant="outline" 
+                      onClick={captureLocation}
+                      disabled={geolocating}
+                      className="gap-2"
+                    >
+                      <Navigation className="h-4 w-4" />
+                      {geolocating ? "Locating..." : "Capture"}
+                    </Button>
+                  </div>
+                  <div className="mt-4 h-[300px] rounded-lg overflow-hidden border">
+                    <MapContainer center={mapPosition} zoom={13} style={{ height: "100%", width: "100%" }}>
+                      <TileLayer
+                        attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>'
+                        url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+                      />
+                      <LocationMarker position={mapPosition} setPosition={setMapPosition} />
+                    </MapContainer>
+                  </div>
                 </div>
               </div>
 
