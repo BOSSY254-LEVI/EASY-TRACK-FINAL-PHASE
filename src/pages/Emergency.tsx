@@ -74,6 +74,7 @@ const Emergency = () => {
   }, []);
 
   const callEmergency = (number: string, type: string) => {
+    window.open(`tel:${number}`, '_self');
     toast({
       title: `Calling ${type}`,
       description: `Dialing ${number}...`,
@@ -192,7 +193,7 @@ const Emergency = () => {
                           <MapPin className="h-3 w-3" />
                           {facility.distance} km
                         </span>
-                        <Button size="sm" variant="ghost" onClick={() => toast({ title: "Navigating", description: `Opening directions to ${facility.name}` })}>
+                        <Button size="sm" variant="ghost" onClick={() => window.open(`https://www.google.com/maps/dir/?api=1&destination=${facility.lat},${facility.lng}`, '_blank')}>
                           Navigate
                         </Button>
                       </div>
