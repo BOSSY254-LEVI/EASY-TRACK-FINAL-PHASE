@@ -4,8 +4,8 @@ import path from "path";
 
 export default defineConfig({
   server: {
-    host: "localhost", // change "::" to "localhost" or "0.0.0.0"
-    port: 5173, // standard Vite port
+    host: "localhost",
+    port: 5173,
   },
   resolve: {
     alias: {
@@ -13,4 +13,8 @@ export default defineConfig({
     },
   },
   plugins: [react()],
+  build: {
+    outDir: "dist",
+    sourcemap: false,
+  },
 });
