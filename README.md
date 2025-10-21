@@ -162,7 +162,7 @@ cd easy-track
 ```
 
 # Install dependencies
-npm install --legacy-peer-deps
+``` npm install --legacy-peer-deps ```
 
 # Start development server
 npm run dev
@@ -239,7 +239,7 @@ Example Data Models
 Field Data
 
 ```
-ts
+
 Copy code
 interface FieldData {
   id: string;
@@ -279,24 +279,28 @@ Add Environment Variables in Vercel dashboard
 Automatic Deployments on every push to main
 
 Manual Deployment
+
 ```bash
 Copy code
 npm run build
 Upload the dist/ folder to your hosting provider.
+```
 
-vercel.json
+## vercel.json
 
 json
-Copy code
+``` Copy code
 {
   "installCommand": "npm install --legacy-peer-deps",
   "buildCommand": "npm run build",
   "outputDirectory": "dist",
   "framework": "vite"
 }
-🧪 Testing
+```
+
+## 🧪 Testing
 Run Tests
-bash
+``` bash
 Copy code
 npm install --save-dev @testing-library/react @testing-library/jest-dom jest
 npm test
