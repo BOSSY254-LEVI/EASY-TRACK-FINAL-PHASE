@@ -6,6 +6,7 @@ import { useState, useEffect } from "react";
 import { ThemeToggle } from "@/components/ThemeToggle";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import OnlineStatusIndicator from "@/components/OnlineStatusIndicator";
+import { supabase } from "@/lib/supabase";
 
 interface DashboardLayoutProps {
   children: React.ReactNode;
@@ -14,12 +15,15 @@ interface DashboardLayoutProps {
 export const DashboardLayout = ({ children }: DashboardLayoutProps) => {
   const location = useLocation();
   const [userName, setUserName] = useState("Field Agent");
-  
+
   useEffect(() => {
-    const storedName = localStorage.getItem("userName");
-    if (storedName && storedName.trim()) {
-      setUserName(storedName.trim());
-    }
+    const getUser = async () => {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (user?.user_metadata?.name) {
+        setUserName(user.user_metadata.name);
+      }
+    };
+    getUser();
   }, []);
 
   const navItems = [
@@ -119,11 +123,16 @@ export const DashboardLayout = ({ children }: DashboardLayoutProps) => {
               <Bell className="h-5 w-5" />
               <span className="absolute top-1 right-1 w-2 h-2 bg-alert rounded-full"></span>
             </Button>
-            <Link to="/">
-              <Button variant="ghost" size="icon">
-                <LogOut className="h-5 w-5" />
-              </Button>
-            </Link>
+            <Button
+              variant="ghost"
+              size="icon"
+              onClick={async () => {
+                await supabase.auth.signOut();
+                window.location.href = '/';
+              }}
+            >
+              <LogOut className="h-5 w-5" />
+            </Button>
           </div>
         </header>
 

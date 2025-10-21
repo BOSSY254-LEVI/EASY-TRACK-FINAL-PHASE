@@ -6,15 +6,19 @@ import { DashboardLayout } from "@/components/DashboardLayout";
 import { LineChart, Line, BarChart, Bar, AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Legend } from "recharts";
 import AIInsightBanner from "@/components/AIInsightBanner";
 import { useState, useEffect } from "react";
+import { supabase } from "@/lib/supabase";
 
 const Dashboard = () => {
   const [userName, setUserName] = useState("Field Agent");
-  
+
   useEffect(() => {
-    const storedName = localStorage.getItem("userName");
-    if (storedName) {
-      setUserName(storedName); // Use full name
-    }
+    const getUser = async () => {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (user?.user_metadata?.name) {
+        setUserName(user.user_metadata.name);
+      }
+    };
+    getUser();
   }, []);
 
   const chartData = [

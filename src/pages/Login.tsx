@@ -6,17 +6,76 @@ import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Activity } from "lucide-react";
 import { Separator } from "@/components/ui/separator";
+import { useToast } from "@/hooks/use-toast";
+import { supabase } from "@/lib/supabase";
 
 const Login = () => {
   const navigate = useNavigate();
+  const { toast } = useToast();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [loading, setLoading] = useState(false);
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    // Authentication logic will be added later
-    console.log("Login attempt:", { email, password });
-    navigate("/dashboard");
+    setLoading(true);
+
+    try {
+      const { data, error } = await supabase.auth.signInWithPassword({
+        email,
+        password,
+      });
+
+      if (error) {
+        toast({
+          title: "Login Failed",
+          description: error.message,
+          variant: "destructive",
+        });
+      } else {
+        toast({
+          title: "Login Successful",
+          description: "Welcome back!",
+        });
+        navigate("/dashboard");
+      }
+    } catch (error) {
+      toast({
+        title: "Error",
+        description: "An unexpected error occurred",
+        variant: "destructive",
+      });
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleOAuthLogin = async (provider: 'google' | 'azure') => {
+    setLoading(true);
+    try {
+      const { error } = await supabase.auth.signInWithOAuth({
+        provider,
+        options: {
+          redirectTo: `${window.location.origin}/dashboard`,
+        },
+      });
+
+      if (error) {
+        toast({
+          title: "OAuth Login Failed",
+          description: error.message,
+          variant: "destructive",
+        });
+      }
+    } catch (error) {
+      toast({
+        title: "Error",
+        description: "An unexpected error occurred",
+        variant: "destructive",
+      });
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -55,8 +114,8 @@ const Login = () => {
                 className="h-11"
               />
             </div>
-            <Button type="submit" variant="hero" className="w-full" size="lg">
-              Sign In
+            <Button type="submit" variant="hero" className="w-full" size="lg" disabled={loading}>
+              {loading ? "Signing In..." : "Sign In"}
             </Button>
           </form>
 
@@ -70,7 +129,12 @@ const Login = () => {
               </div>
             </div>
             <div className="mt-6 grid grid-cols-2 gap-3">
-              <Button variant="outline" className="w-full">
+              <Button
+                variant="outline"
+                className="w-full"
+                onClick={() => handleOAuthLogin('google')}
+                disabled={loading}
+              >
                 <svg className="mr-2 h-4 w-4" viewBox="0 0 24 24">
                   <path
                     d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"
@@ -91,9 +155,14 @@ const Login = () => {
                 </svg>
                 Google
               </Button>
-              <Button variant="outline" className="w-full">
+              <Button
+                variant="outline"
+                className="w-full"
+                onClick={() => handleOAuthLogin('azure')}
+                disabled={loading}
+              >
                 <svg className="mr-2 h-4 w-4" fill="currentColor" viewBox="0 0 24 24">
-                  <path d="M11.986 2C6.474 2 2 6.475 2 12.01c0 4.49 2.916 8.27 6.956 9.59-.1-.85-.186-2.155.04-3.085.2-.79 1.29-5.02 1.29-5.02s-.33-.66-.33-1.635c0-1.53.89-2.67 2-2.67 1.055 0 1.56.79 1.56 1.74 0 1.06-.675 2.64-.1 3.39.09.085.17.205.13.37-.14.58-.45 1.64-.51 2.1-.07.29-.28.35-.65.21-1.005-.465-1.635-2.04-1.635-4.135 0-2.67 1.945-5.125 5.605-5.125 2.94 0 4.925 2.09 4.925 4.885 0 2.915-1.84 5.26-4.395 5.26-1.08 0-2.1-.56-2.45-1.23l-.665 2.535c-.24 1.005-.9 2.26-.133 4.04C15.05 21.55 18.94 22 21.99 22c5.516 0 9.986-4.475 9.986-10.01C31.976 6.475 27.502 2 21.99 2H11.986z"/>
+                  <path d="M3 3h18v18H3V3zm16 16V5H5v14h14zM9 7h6v2H9V7zm0 4h6v2H9v-2zm0 4h4v2H9v-2z"/>
                 </svg>
                 Microsoft
               </Button>
