@@ -37,9 +37,19 @@ const App = () => {
 
     // Listen for auth changes
     const { data: { subscription } } = supabase.auth.onAuthStateChange(
-      (_event, session) => {
+      async (event, session) => {
         setUser(session?.user ?? null);
         setLoading(false);
+
+        // Handle email confirmation
+        if (event === 'SIGNED_IN' && session) {
+          // Check if this is an email confirmation
+          const urlParams = new URLSearchParams(window.location.hash.substring(1));
+          if (urlParams.get('type') === 'signup') {
+            // User confirmed email, redirect to dashboard
+            window.location.href = '/dashboard';
+          }
+        }
       }
     );
 

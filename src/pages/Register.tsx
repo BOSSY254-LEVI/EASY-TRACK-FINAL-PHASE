@@ -43,6 +43,7 @@ const Register = () => {
             name: formData.name,
             organization: formData.organization,
           },
+          emailRedirectTo: `${window.location.origin}/dashboard`,
         },
       });
 
@@ -57,7 +58,7 @@ const Register = () => {
           title: "Registration Successful",
           description: "Please check your email to confirm your account.",
         });
-        navigate("/login");
+        // Don't navigate immediately - wait for email confirmation
       }
     } catch (error) {
       toast({
