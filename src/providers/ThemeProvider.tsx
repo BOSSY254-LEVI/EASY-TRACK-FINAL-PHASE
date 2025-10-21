@@ -7,8 +7,9 @@ interface ThemeProviderProps {
   defaultTheme?: string;
   enableSystem?: boolean;
   storageKey?: string;
+  themes?: string[];
 }
 
-export function ThemeProvider({ children, ...props }: ThemeProviderProps) {
-  return <NextThemesProvider {...props}>{children}</NextThemesProvider>;
+export function ThemeProvider({ children, themes = ["light", "dark", "system"], ...props }: ThemeProviderProps) {
+  return <NextThemesProvider themes={themes} {...props}>{children}</NextThemesProvider>;
 }

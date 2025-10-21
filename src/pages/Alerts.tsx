@@ -1,8 +1,32 @@
+"use client";
+
+import { useState } from "react";
+import { useToast } from "@/components/ui/use-toast";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogDescription,
+} from "@/components/ui/dialog";
 import { DashboardLayout } from "@/components/DashboardLayout";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { AlertTriangle, AlertCircle, Info, CheckCircle, Bell } from "lucide-react";
+import {
+  AlertTriangle,
+  AlertCircle,
+  Info,
+  CheckCircle,
+  CheckCircle2,
+  Bell,
+} from "lucide-react";
 
 const Alerts = () => {
   const { toast } = useToast();
@@ -40,18 +64,19 @@ const Alerts = () => {
       time: "2 days ago",
       status: "resolved",
     },
-  ];
+  ]);
 
+  // ✅ Helper function correctly placed OUTSIDE the array
   const getAlertIcon = (type: string) => {
     switch (type) {
       case "critical":
-        return <AlertTriangle className="h-5 w-5 text-critical" />;
+        return <AlertTriangle className="h-5 w-5 text-red-500" />;
       case "warning":
-        return <AlertCircle className="h-5 w-5 text-alert" />;
+        return <AlertCircle className="h-5 w-5 text-yellow-500" />;
       case "info":
-        return <Info className="h-5 w-5 text-secondary" />;
+        return <Info className="h-5 w-5 text-blue-500" />;
       case "success":
-        return <CheckCircle className="h-5 w-5 text-success" />;
+        return <CheckCircle className="h-5 w-5 text-green-500" />;
       default:
         return <Bell className="h-5 w-5" />;
     }
@@ -62,18 +87,22 @@ const Alerts = () => {
       <div className="space-y-6">
         <div className="flex items-center justify-between">
           <div>
-            <h1 className="font-heading text-3xl font-bold text-foreground">Alerts & Notifications</h1>
-            <p className="text-muted-foreground mt-1">Monitor system alerts and important notifications</p>
+            <h1 className="font-heading text-3xl font-bold text-foreground">
+              Alerts & Notifications
+            </h1>
+            <p className="text-muted-foreground mt-1">
+              Monitor system alerts and important notifications
+            </p>
           </div>
           <Button variant="outline">Mark All as Read</Button>
         </div>
 
         <div className="grid gap-4">
-          {alerts.map((alert) => (
+          {alertsList.map((alert) => (
             <Card
               key={alert.id}
               className={`card-neumorphic transition-all hover:shadow-elevated ${
-                alert.status === "open" ? "border-l-4 border-l-critical" : ""
+                alert.status === "open" ? "border-l-4 border-l-red-500" : ""
               }`}
             >
               <CardHeader>
@@ -82,8 +111,12 @@ const Alerts = () => {
                     {getAlertIcon(alert.type)}
                     <div className="flex-1">
                       <CardTitle className="text-lg">{alert.title}</CardTitle>
-                      <CardDescription className="mt-1">{alert.message}</CardDescription>
-                      <p className="text-xs text-muted-foreground mt-2">{alert.time}</p>
+                      <CardDescription className="mt-1">
+                        {alert.message}
+                      </CardDescription>
+                      <p className="text-xs text-muted-foreground mt-2">
+                        {alert.time}
+                      </p>
                     </div>
                   </div>
                   <Badge
@@ -102,8 +135,16 @@ const Alerts = () => {
               {alert.status === "open" && (
                 <CardContent className="pt-0">
                   <div className="flex gap-2">
-                    <Button size="sm" variant="default">Acknowledge</Button>
-                    <Button size="sm" variant="outline">View Details</Button>
+                    <Button size="sm" variant="default">
+                      Acknowledge
+                    </Button>
+                    <Button
+                      size="sm"
+                      variant="outline"
+                      onClick={() => setSelectedAlert(alert)}
+                    >
+                      View Details
+                    </Button>
                   </div>
                 </CardContent>
               )}
@@ -116,9 +157,18 @@ const Alerts = () => {
           <DialogContent className="sm:max-w-[525px]">
             <DialogHeader>
               <DialogTitle className="flex items-center gap-2">
-                {selectedAlert?.severity === "critical" && <AlertTriangle className="h-5 w-5 text-critical" />}
-                {selectedAlert?.severity === "warning" && <AlertCircle className="h-5 w-5 text-alert" />}
-                {selectedAlert?.severity === "info" && <CheckCircle2 className="h-5 w-5 text-success" />}
+                {selectedAlert?.type === "critical" && (
+                  <AlertTriangle className="h-5 w-5 text-red-500" />
+                )}
+                {selectedAlert?.type === "warning" && (
+                  <AlertCircle className="h-5 w-5 text-yellow-500" />
+                )}
+                {selectedAlert?.type === "info" && (
+                  <Info className="h-5 w-5 text-blue-500" />
+                )}
+                {selectedAlert?.type === "success" && (
+                  <CheckCircle2 className="h-5 w-5 text-green-500" />
+                )}
                 {selectedAlert?.title}
               </DialogTitle>
               <DialogDescription>{selectedAlert?.time}</DialogDescription>
@@ -126,28 +176,13 @@ const Alerts = () => {
             <div className="space-y-4 py-4">
               <div>
                 <h4 className="font-semibold mb-2">Description</h4>
-                <p className="text-muted-foreground">{selectedAlert?.description}</p>
-              </div>
-              <div>
-                <h4 className="font-semibold mb-2">Severity</h4>
-                <Badge variant={
-                  selectedAlert?.severity === "critical" ? "destructive" :
-                  selectedAlert?.severity === "warning" ? "default" : "outline"
-                }>
-                  {selectedAlert?.severity}
-                </Badge>
+                <p className="text-muted-foreground">
+                  {selectedAlert?.message}
+                </p>
               </div>
               <div>
                 <h4 className="font-semibold mb-2">Status</h4>
                 <Badge variant="outline">{selectedAlert?.status}</Badge>
-              </div>
-              <div>
-                <h4 className="font-semibold mb-2">Recommended Actions</h4>
-                <ul className="list-disc list-inside text-muted-foreground space-y-1">
-                  <li>Review the affected data points</li>
-                  <li>Contact the field team for clarification</li>
-                  <li>Document any findings in the project log</li>
-                </ul>
               </div>
             </div>
           </DialogContent>

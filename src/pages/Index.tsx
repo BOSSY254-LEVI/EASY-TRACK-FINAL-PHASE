@@ -100,11 +100,6 @@ const Index = () => {
                     Start Monitoring
                   </Button>
                 </Link>
-                <Link to="/dashboard">
-                  <Button variant="outline" size="lg">
-                    View Demo
-                  </Button>
-                </Link>
               </div>
             </div>
             <div className="relative animate-slide-up">
@@ -183,12 +178,62 @@ const Index = () => {
         </div>
       </section>
 
-      {/* Footer */}
-      <footer className="border-t border-border bg-muted/30 py-8">
-        <div className="max-w-7xl mx-auto px-6 text-center">
-          <p className="text-sm text-muted-foreground">
-            © 2025 EASY TRACK. Empowering communities with data for better health, water, and climate outcomes.
-          </p>
+      {/* Professional Footer */}
+      <footer className="border-t border-border bg-card py-12">
+        <div className="max-w-7xl mx-auto px-6">
+          <div className="grid md:grid-cols-4 gap-8">
+            <div className="space-y-4">
+              <div className="flex items-center gap-3">
+                <div className="w-10 h-10 bg-gradient-hero rounded-lg flex items-center justify-center">
+                  <Activity className="h-5 w-5 text-primary-foreground" />
+                </div>
+                <div>
+                  <h3 className="font-heading font-bold text-lg text-foreground">EASY TRACK</h3>
+                  <p className="text-xs text-muted-foreground">Data for Life. Insight for Action.</p>
+                </div>
+              </div>
+              <p className="text-sm text-muted-foreground">
+                Empowering field teams with world-class data collection and analysis tools for health, water, and climate action.
+              </p>
+            </div>
+            <div>
+              <h4 className="font-semibold text-foreground mb-4">Product</h4>
+              <ul className="space-y-2 text-sm text-muted-foreground">
+                <li><a href="#" className="hover:text-primary transition-colors">Features</a></li>
+                <li><a href="#" className="hover:text-primary transition-colors">Pricing</a></li>
+                <li><a href="#" className="hover:text-primary transition-colors">Security</a></li>
+                <li><a href="#" className="hover:text-primary transition-colors">Integrations</a></li>
+              </ul>
+            </div>
+            <div>
+              <h4 className="font-semibold text-foreground mb-4">Company</h4>
+              <ul className="space-y-2 text-sm text-muted-foreground">
+                <li><a href="#" className="hover:text-primary transition-colors">About</a></li>
+                <li><a href="#" className="hover:text-primary transition-colors">Blog</a></li>
+                <li><a href="#" className="hover:text-primary transition-colors">Careers</a></li>
+                <li><a href="#" className="hover:text-primary transition-colors">Contact</a></li>
+              </ul>
+            </div>
+            <div>
+              <h4 className="font-semibold text-foreground mb-4">Support</h4>
+              <ul className="space-y-2 text-sm text-muted-foreground">
+                <li><a href="#" className="hover:text-primary transition-colors">Help Center</a></li>
+                <li><a href="#" className="hover:text-primary transition-colors">Documentation</a></li>
+                <li><a href="#" className="hover:text-primary transition-colors">Community</a></li>
+                <li><a href="#" className="hover:text-primary transition-colors">Status</a></li>
+              </ul>
+            </div>
+          </div>
+          <div className="border-t border-border mt-8 pt-8 flex flex-col md:flex-row justify-between items-center">
+            <p className="text-sm text-muted-foreground">
+              © 2025 EASY TRACK. All rights reserved.
+            </p>
+            <div className="flex gap-6 mt-4 md:mt-0">
+              <a href="#" className="text-sm text-muted-foreground hover:text-primary transition-colors">Privacy Policy</a>
+              <a href="#" className="text-sm text-muted-foreground hover:text-primary transition-colors">Terms of Service</a>
+              <a href="#" className="text-sm text-muted-foreground hover:text-primary transition-colors">Cookie Policy</a>
+            </div>
+          </div>
         </div>
       </footer>
     </div>

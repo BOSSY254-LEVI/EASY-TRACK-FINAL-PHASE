@@ -13,7 +13,7 @@ const Dashboard = () => {
   useEffect(() => {
     const storedName = localStorage.getItem("userName");
     if (storedName) {
-      setUserName(storedName.split(' ')[0]); // First name only
+      setUserName(storedName); // Use full name
     }
   }, []);
 

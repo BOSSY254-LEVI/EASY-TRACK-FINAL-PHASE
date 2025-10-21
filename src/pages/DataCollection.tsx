@@ -147,15 +147,15 @@ const DataCollection = () => {
                       required
                       className="flex-1"
                     />
-                    <Button 
-                      type="button" 
-                      variant="outline" 
+                    <Button
+                      type="button"
+                      variant="outline"
                       onClick={captureLocation}
                       disabled={geolocating}
                       className="gap-2"
                     >
                       <Navigation className="h-4 w-4" />
-                      {geolocating ? "Locating..." : "Capture"}
+                      {geolocating ? "Locating..." : "Auto-Locate"}
                     </Button>
                   </div>
                   <div className="mt-4 h-[300px] rounded-lg overflow-hidden border">
