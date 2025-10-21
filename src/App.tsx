@@ -47,7 +47,7 @@ const App = () => {
           const urlParams = new URLSearchParams(window.location.hash.substring(1));
           if (urlParams.get('type') === 'signup') {
             // User confirmed email, redirect to dashboard
-            window.location.href = '/dashboard';
+            window.history.replaceState(null, '', '/dashboard');
           }
         }
       }
