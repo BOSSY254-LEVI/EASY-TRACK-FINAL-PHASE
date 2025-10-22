@@ -110,7 +110,7 @@ const DataCollection = () => {
         });
         // Add to local state for immediate display
         setCollectedData(prev => [...prev, {
-          id: data[0].id,
+          id: data [0].id,
           title: formData.title,
           category: formData.category,
           location: formData.location,

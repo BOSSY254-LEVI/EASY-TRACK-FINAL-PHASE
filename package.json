@@ -4,11 +4,11 @@
   "version": "0.0.0",
   "type": "module",
   "scripts": {
-    "dev": "vite",
-    "build": "vite build",
-    "build:dev": "vite build --mode development",
-    "lint": "eslint .",
-    "preview": "vite preview"
+    "dev": "cd frontend && vite",
+    "build": "cd frontend && vite build",
+    "build:dev": "cd frontend && vite build --mode development",
+    "lint": "cd frontend && eslint .",
+    "preview": "cd frontend && vite preview"
   },
   "dependencies": {
     "@hookform/resolvers": "^3.10.0",
