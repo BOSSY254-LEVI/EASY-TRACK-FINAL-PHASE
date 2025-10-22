@@ -4,21 +4,64 @@ import { Input } from "@/components/ui/input";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { BarChart, Bar, LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Legend, PieChart, Pie, Cell } from "recharts";
 import { DashboardLayout } from "@/components/DashboardLayout";
+import { useState, useEffect } from "react";
+import { supabase } from "@/lib/supabase";
+import { useToast } from "@/hooks/use-toast";
 
 const Reports = () => {
-  const monthlyData = [
-    { month: "Jan", water: 45, health: 32, climate: 28 },
-    { month: "Feb", water: 52, health: 38, climate: 35 },
-    { month: "Mar", water: 61, health: 42, climate: 39 },
-    { month: "Apr", water: 58, health: 48, climate: 43 },
-    { month: "May", water: 70, health: 55, climate: 48 },
-    { month: "Jun", water: 82, health: 62, climate: 54 },
-  ];
+  const { toast } = useToast();
+  const [fieldData, setFieldData] = useState<any[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [searchTerm, setSearchTerm] = useState("");
+
+  useEffect(() => {
+    fetchFieldData();
+  }, []);
+
+  const fetchFieldData = async () => {
+    try {
+      const { data, error } = await supabase
+        .from('field_data')
+        .select('*')
+        .order('created_at', { ascending: false });
+
+      if (error) {
+        toast({
+          title: "Error Loading Data",
+          description: error.message,
+          variant: "destructive",
+        });
+      } else {
+        setFieldData(data || []);
+      }
+    } catch (error) {
+      toast({
+        title: "Error",
+        description: "Failed to load field data",
+        variant: "destructive",
+      });
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // Process data for charts
+  const monthlyData = fieldData.reduce((acc: any[], item) => {
+    const month = new Date(item.created_at).toLocaleString('default', { month: 'short' });
+    const existing = acc.find(m => m.month === month);
+    if (existing) {
+      existing[item.category] = (existing[item.category] || 0) + 1;
+    } else {
+      acc.push({ month, [item.category]: 1 });
+    }
+    return acc;
+  }, []);
 
   const categoryData = [
-    { name: "Water Quality", value: 368, color: "hsl(var(--secondary))" },
-    { name: "Health Screening", value: 277, color: "hsl(var(--destructive))" },
-    { name: "Climate Monitoring", value: 247, color: "hsl(var(--success))" },
+    { name: "Water Quality", value: fieldData.filter(d => d.category === 'water').length, color: "hsl(var(--secondary))" },
+    { name: "Health Screening", value: fieldData.filter(d => d.category === 'health').length, color: "hsl(var(--destructive))" },
+    { name: "Climate Monitoring", value: fieldData.filter(d => d.category === 'climate').length, color: "hsl(var(--success))" },
+    { name: "Environmental", value: fieldData.filter(d => d.category === 'environment').length, color: "hsl(var(--primary))" },
   ];
 
   const regionData = [
@@ -29,13 +72,19 @@ const Reports = () => {
     { region: "Lagos", reports: 145, alerts: 15 },
   ];
 
-  const recentReports = [
-    { id: 1, title: "Water Quality Assessment - Site A", date: "2024-01-15", status: "Completed", type: "Water" },
-    { id: 2, title: "Disease Surveillance Report - Region B", date: "2024-01-14", status: "In Progress", type: "Health" },
-    { id: 3, title: "Climate Data Collection - Zone C", date: "2024-01-14", status: "Completed", type: "Climate" },
-    { id: 4, title: "Community Health Survey - District D", date: "2024-01-13", status: "Completed", type: "Health" },
-    { id: 5, title: "Rainfall Measurement - Station E", date: "2024-01-12", status: "Completed", type: "Climate" },
-  ];
+  const filteredReports = fieldData.filter(item =>
+    item.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    item.description.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    item.category.toLowerCase().includes(searchTerm.toLowerCase())
+  );
+
+  const recentReports = filteredReports.slice(0, 5).map((item, index) => ({
+    id: item.id,
+    title: item.title,
+    date: new Date(item.created_at).toLocaleDateString(),
+    status: "Completed",
+    type: item.category.charAt(0).toUpperCase() + item.category.slice(1),
+  }));
 
   return (
     <DashboardLayout>
@@ -59,7 +108,12 @@ const Reports = () => {
               <div className="flex-1 min-w-[200px]">
                 <div className="relative">
                   <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-                  <Input placeholder="Search reports..." className="pl-10" />
+                  <Input
+                    placeholder="Search reports..."
+                    className="pl-10"
+                    value={searchTerm}
+                    onChange={(e) => setSearchTerm(e.target.value)}
+                  />
                 </div>
               </div>
               <Button variant="outline" className="gap-2">

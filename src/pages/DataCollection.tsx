@@ -7,10 +7,11 @@ import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { useToast } from "@/hooks/use-toast";
 import { FileText, MapPin, Calendar, Save, Navigation } from "lucide-react";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { MapContainer, TileLayer, Marker, Popup, useMapEvents } from "react-leaflet";
 import "leaflet/dist/leaflet.css";
 import L from "leaflet";
+import { supabase } from "@/lib/supabase";
 
 // Fix Leaflet default marker icon
 delete (L.Icon.Default.prototype as any)._getIconUrl;
@@ -44,6 +45,7 @@ const DataCollection = () => {
   });
   const [mapPosition, setMapPosition] = useState<[number, number]>([6.5244, 3.3792]);
   const [geolocating, setGeolocating] = useState(false);
+  const [collectedData, setCollectedData] = useState<any[]>([]);
 
   const captureLocation = () => {
     setGeolocating(true);
@@ -79,13 +81,51 @@ const DataCollection = () => {
     }
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    toast({
-      title: "Data Entry Saved",
-      description: "Your field data has been recorded successfully.",
-    });
-    setFormData({ title: "", category: "", location: "", description: "" });
+
+    try {
+      const { data, error } = await supabase
+        .from('field_data')
+        .insert([
+          {
+            title: formData.title,
+            category: formData.category,
+            location: formData.location,
+            description: formData.description,
+            created_at: new Date().toISOString(),
+          }
+        ]);
+
+      if (error) {
+        toast({
+          title: "Error Saving Data",
+          description: error.message,
+          variant: "destructive",
+        });
+      } else {
+        toast({
+          title: "Data Entry Saved",
+          description: "Your field data has been recorded successfully.",
+        });
+        // Add to local state for immediate display
+        setCollectedData(prev => [...prev, {
+          id: data[0].id,
+          title: formData.title,
+          category: formData.category,
+          location: formData.location,
+          description: formData.description,
+          created_at: new Date().toISOString(),
+        }]);
+        setFormData({ title: "", category: "", location: "", description: "" });
+      }
+    } catch (error) {
+      toast({
+        title: "Error",
+        description: "An unexpected error occurred",
+        variant: "destructive",
+      });
+    }
   };
 
   return (

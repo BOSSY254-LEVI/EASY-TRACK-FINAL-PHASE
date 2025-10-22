@@ -2,10 +2,12 @@ import { DashboardLayout } from "@/components/DashboardLayout";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { Phone, MapPin, AlertTriangle, Navigation } from "lucide-react";
+import { Input } from "@/components/ui/input";
+import { Phone, MapPin, AlertTriangle, Navigation, Search } from "lucide-react";
 import { MapContainer, TileLayer, Marker, Popup, Circle, useMap } from "react-leaflet";
 import { useState, useEffect } from "react";
 import { useToast } from "@/hooks/use-toast";
+import { supabase } from "@/lib/supabase";
 import "leaflet/dist/leaflet.css";
 import L from "leaflet";
 
@@ -43,6 +45,36 @@ const Emergency = () => {
   const { toast } = useToast();
   const [userLocation, setUserLocation] = useState<[number, number]>([6.5244, 3.3792]);
   const [locationLoading, setLocationLoading] = useState(false);
+  const [searchTerm, setSearchTerm] = useState("");
+  const [facilities, setFacilities] = useState([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    fetchFacilities();
+  }, []);
+
+  const fetchFacilities = async () => {
+    try {
+      // For now, using mock data since we don't have a facilities table in Supabase
+      // In a real implementation, this would fetch from Supabase
+      const mockFacilities = [
+        { id: 1, name: "Central Hospital", type: "Hospital", distance: 2.3, lat: 6.5244, lng: 3.3792, available: true },
+        { id: 2, name: "City Clinic", type: "Clinic", distance: 1.8, lat: 6.5344, lng: 3.3892, available: true },
+        { id: 3, name: "Emergency Care Center", type: "Emergency", distance: 3.1, lat: 6.5144, lng: 3.3692, available: false },
+        { id: 4, name: "Community Health Post", type: "Health Post", distance: 0.9, lat: 6.5294, lng: 3.3842, available: true },
+      ];
+      setFacilities(mockFacilities);
+    } catch (error) {
+      console.error('Error fetching facilities:', error);
+      toast({
+        title: "Error",
+        description: "Failed to load facilities",
+        variant: "destructive",
+      });
+    } finally {
+      setLoading(false);
+    }
+  };
 
   const detectLocation = () => {
     setLocationLoading(true);
@@ -72,6 +104,12 @@ const Emergency = () => {
   useEffect(() => {
     detectLocation();
   }, []);
+
+  // Filter facilities based on search term
+  const filteredFacilities = facilities.filter(facility =>
+    facility.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    facility.type.toLowerCase().includes(searchTerm.toLowerCase())
+  );
 
   const callEmergency = (number: string, type: string) => {
     window.open(`tel:${number}`, '_self');
@@ -147,7 +185,7 @@ const Emergency = () => {
                     </Marker>
 
                     {/* Health Facilities */}
-                    {nearbyFacilities.map((facility) => (
+                    {facilities.map((facility) => (
                       <Marker key={facility.id} position={[facility.lat, facility.lng]}>
                         <Popup>
                           <div className="p-2">
@@ -173,9 +211,19 @@ const Emergency = () => {
               <CardHeader>
                 <CardTitle className="text-lg">Facilities Near You</CardTitle>
                 <CardDescription>Sorted by distance</CardDescription>
+                {/* Search Bar */}
+                <div className="relative mt-4">
+                  <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground h-4 w-4" />
+                  <Input
+                    placeholder="Search facilities by name or type..."
+                    value={searchTerm}
+                    onChange={(e) => setSearchTerm(e.target.value)}
+                    className="pl-10"
+                  />
+                </div>
               </CardHeader>
               <CardContent className="space-y-3">
-                {nearbyFacilities
+                {filteredFacilities
                   .sort((a, b) => a.distance - b.distance)
                   .map((facility) => (
                     <div key={facility.id} className="p-4 bg-muted/50 rounded-lg space-y-2 hover:bg-muted transition-colors">

@@ -47,13 +47,37 @@ const Dashboard = () => {
     { month: "Jun", water: 210, health: 165, climate: 125 },
   ];
 
-  const mapLocations = [
-    { id: 1, name: "Nairobi Site A", lat: 20, lng: 25, type: "water", status: "active" },
-    { id: 2, name: "Kampala Site B", lat: 45, lng: 60, type: "health", status: "active" },
-    { id: 3, name: "Dar es Salaam", lat: 70, lng: 40, type: "climate", status: "alert" },
-    { id: 4, name: "Kigali Zone C", lat: 35, lng: 75, type: "water", status: "active" },
-    { id: 5, name: "Lagos District", lat: 55, lng: 20, type: "health", status: "active" },
-  ];
+  const [mapLocations, setMapLocations] = useState<any[]>([]);
+
+  useEffect(() => {
+    const fetchMapLocations = async () => {
+      try {
+        const { data, error } = await supabase
+          .from('field_data')
+          .select('id, title, location, latitude, longitude, category')
+          .not('latitude', 'is', null)
+          .not('longitude', 'is', null);
+
+        if (error) {
+          console.error('Error fetching map locations:', error);
+        } else {
+          const locations = data?.map((item, index) => ({
+            id: item.id,
+            name: item.title,
+            lat: item.latitude,
+            lng: item.longitude,
+            type: item.category,
+            status: "active"
+          })) || [];
+          setMapLocations(locations);
+        }
+      } catch (error) {
+        console.error('Error:', error);
+      }
+    };
+
+    fetchMapLocations();
+  }, []);
 
   const currentHour = new Date().getHours();
   const greeting = currentHour < 12 ? "Good Morning" : currentHour < 18 ? "Good Afternoon" : "Good Evening";
