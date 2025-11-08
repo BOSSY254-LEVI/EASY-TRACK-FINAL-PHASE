@@ -20,20 +20,12 @@ const Reports = () => {
 
   const fetchFieldData = async () => {
     try {
-      const { data, error } = await supabase
-        .from('field_data')
-        .select('*')
-        .order('created_at', { ascending: false });
-
-      if (error) {
-        toast({
-          title: "Error Loading Data",
-          description: error.message,
-          variant: "destructive",
-        });
-      } else {
-        setFieldData(data || []);
+      const response = await fetch('http://localhost:3001/api/field-data');
+      if (!response.ok) {
+        throw new Error('Failed to fetch data');
       }
+      const data = await response.json();
+      setFieldData(data || []);
     } catch (error) {
       toast({
         title: "Error",

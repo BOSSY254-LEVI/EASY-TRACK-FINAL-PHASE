@@ -6,6 +6,7 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { ThemeProvider } from "@/providers/ThemeProvider";
 import { useEffect, useState } from "react";
 import { supabase } from "@/lib/supabase";
+import BossAIChatbot from "@/components/BossAIChatbot";
 import Index from "./pages/Index";
 import Login from "./pages/Login";
 import Register from "./pages/Register";
@@ -95,6 +96,7 @@ const App = () => {
               {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
               <Route path="*" element={<NotFound />} />
             </Routes>
+            <BossAIChatbot />
           </BrowserRouter>
         </TooltipProvider>
       </ThemeProvider>

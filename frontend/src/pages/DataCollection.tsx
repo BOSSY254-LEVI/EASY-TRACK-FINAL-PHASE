@@ -85,40 +85,41 @@ const DataCollection = () => {
     e.preventDefault();
 
     try {
-      const { data, error } = await supabase
-        .from('field_data')
-        .insert([
-          {
-            title: formData.title,
-            category: formData.category,
-            location: formData.location,
-            description: formData.description,
-            created_at: new Date().toISOString(),
-          }
-        ]);
-
-      if (error) {
-        toast({
-          title: "Error Saving Data",
-          description: error.message,
-          variant: "destructive",
-        });
-      } else {
-        toast({
-          title: "Data Entry Saved",
-          description: "Your field data has been recorded successfully.",
-        });
-        // Add to local state for immediate display
-        setCollectedData(prev => [...prev, {
-          id: data [0].id,
+      const response = await fetch('http://localhost:3001/api/field-data', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
           title: formData.title,
           category: formData.category,
           location: formData.location,
           description: formData.description,
-          created_at: new Date().toISOString(),
-        }]);
-        setFormData({ title: "", category: "", location: "", description: "" });
+        }),
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to save data');
       }
+
+      const savedData = await response.json();
+
+      toast({
+        title: "Data Entry Saved",
+        description: "Your field data has been recorded successfully.",
+      });
+
+      // Add to local state for immediate display
+      setCollectedData(prev => [...prev, {
+        id: savedData._id,
+        title: formData.title,
+        category: formData.category,
+        location: formData.location,
+        description: formData.description,
+        created_at: savedData.created_at,
+      }]);
+
+      setFormData({ title: "", category: "", location: "", description: "" });
     } catch (error) {
       toast({
         title: "Error",

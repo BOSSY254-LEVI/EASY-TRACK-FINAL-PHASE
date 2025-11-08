@@ -52,27 +52,25 @@ const Dashboard = () => {
   useEffect(() => {
     const fetchMapLocations = async () => {
       try {
-        const { data, error } = await supabase
-          .from('field_data')
-          .select('id, title, location, latitude, longitude, category')
-          .not('latitude', 'is', null)
-          .not('longitude', 'is', null);
+        const response = await fetch('http://localhost:3001/api/field-data');
+        if (!response.ok) {
+          throw new Error('Failed to fetch data');
+        }
+        const data = await response.json();
 
-        if (error) {
-          console.error('Error fetching map locations:', error);
-        } else {
-          const locations = data?.map((item, index) => ({
-            id: item.id,
+        const locations = data
+          .filter((item: any) => item.latitude && item.longitude)
+          .map((item: any) => ({
+            id: item._id,
             name: item.title,
             lat: item.latitude,
             lng: item.longitude,
             type: item.category,
             status: "active"
-          })) || [];
-          setMapLocations(locations);
-        }
+          }));
+        setMapLocations(locations);
       } catch (error) {
-        console.error('Error:', error);
+        console.error('Error fetching map locations:', error);
       }
     };
 
