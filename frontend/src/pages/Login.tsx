@@ -353,11 +353,11 @@ const Login = () => {
                   </div>
                 </div>
                 
-                <motion.div className="grid grid-cols-2 gap-3" variants={containerVariants}>
+                <motion.div className="flex justify-center" variants={containerVariants}>
                   <motion.div variants={itemVariants}>
                     <Button
                       variant="outline"
-                      className="w-full h-11 rounded-xl border-2 border-gray-200 bg-white hover:bg-gray-50 hover:border-gray-300 transition-all duration-300 group relative overflow-hidden"
+                      className="w-40 h-11 rounded-xl border-2 border-gray-200 bg-white hover:bg-gray-50 hover:border-gray-300 transition-all duration-300 group relative overflow-hidden"
                       onClick={() => handleOAuthLogin('google')}
                       disabled={loading}
                     >
@@ -372,42 +372,25 @@ const Login = () => {
                       </motion.div>
                     </Button>
                   </motion.div>
-                  
-                  <motion.div variants={itemVariants}>
-                    <Button
-                      variant="outline"
-                      className="w-full h-11 rounded-xl border-2 border-gray-200 bg-white hover:bg-gray-50 hover:border-gray-300 transition-all duration-300 group relative overflow-hidden"
-                      onClick={() => handleOAuthLogin('azure')}
-                      disabled={loading}
-                    >
-                      <motion.div className="flex items-center gap-2" whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }}>
-                        <svg className="w-5 h-5 text-blue-600" fill="currentColor" viewBox="0 0 24 24">
-                          <path d="M3 3h18v18H3V3zm16 16V5H5v14h14zM9 7h6v2H9V7zm0 4h6v2H9v-2zm0 4h4v2H9v-2z"/>
-                        </svg>
-                        <span className="font-medium text-gray-700">Microsoft</span>
-                      </motion.div>
-                    </Button>
-                  </motion.div>
                 </motion.div>
               </motion.div>
               
               {/* Enhanced Footer Links */}
-              <motion.div variants={itemVariants} className="space-y-4 pt-4">
-                <div className="text-center space-y-3">
-                  <p className="text-sm text-gray-600">
+              <div className="space-y-4 pt-4">
+                <div className="text-center space-y-4">
+                  <p className="text-sm text-gray-700 font-medium">
                     Don't have an account?{" "}
                     <Link 
                       to="/register" 
-                      className="text-blue-600 hover:text-blue-700 font-semibold transition-all duration-300 hover:underline underline-offset-4 flex items-center gap-1 justify-center group"
+                      className="text-blue-600 hover:text-blue-800 font-bold transition-all duration-300 hover:underline underline-offset-4"
                     >
                       Create account
-                      <ArrowRight className="h-4 w-4 transition-transform duration-300 group-hover:translate-x-1" />
                     </Link>
                   </p>
                   
                   <Link 
                     to="/" 
-                    className="inline-flex items-center gap-2 text-sm text-gray-500 hover:text-gray-700 transition-all duration-300 group font-medium"
+                    className="inline-flex items-center gap-2 text-sm text-gray-700 hover:text-gray-900 transition-all duration-300 group font-bold"
                   >
                     <Home className="h-4 w-4 transition-transform duration-300 group-hover:scale-110" />
                     Back to homepage
@@ -424,7 +407,7 @@ const Login = () => {
                   <Shield className="h-4 w-4 text-green-500" />
                   <span className="text-xs text-gray-500 font-medium">Secure & Encrypted Login</span>
                 </motion.div>
-              </motion.div>
+              </div>
             </CardContent>
           </Card>
         </motion.div>
