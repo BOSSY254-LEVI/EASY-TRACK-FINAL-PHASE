@@ -6,6 +6,7 @@ import { BarChart, Bar, LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, R
 import { DashboardLayout } from "@/components/DashboardLayout";
 import { useState, useEffect } from "react";
 import { supabase } from "@/lib/supabase";
+import { fieldDataAPI } from "@/services/api";
 import { useToast } from "@/hooks/use-toast";
 
 const Reports = () => {
@@ -20,11 +21,7 @@ const Reports = () => {
 
   const fetchFieldData = async () => {
     try {
-      const response = await fetch('http://localhost:3001/api/field-data');
-      if (!response.ok) {
-        throw new Error('Failed to fetch data');
-      }
-      const data = await response.json();
+      const data = await fieldDataAPI.getAll();
       setFieldData(data || []);
     } catch (error) {
       toast({

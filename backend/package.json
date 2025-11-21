@@ -12,7 +12,8 @@
     "cors": "^2.8.5",
     "openai": "^4.0.0",
     "dotenv": "^16.0.0",
-    "mongoose": "^8.0.0"
+    "mongoose": "^8.0.0",
+    "@supabase/supabase-js": "^2.43.0"
   },
   "devDependencies": {
     "nodemon": "^2.0.20"

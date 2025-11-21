@@ -12,6 +12,7 @@ import { MapContainer, TileLayer, Marker, Popup, useMapEvents } from "react-leaf
 import "leaflet/dist/leaflet.css";
 import L from "leaflet";
 import { supabase } from "@/lib/supabase";
+import { fieldDataAPI } from "@/services/api";
 
 // Fix Leaflet default marker icon
 delete (L.Icon.Default.prototype as any)._getIconUrl;
@@ -85,24 +86,16 @@ const DataCollection = () => {
     e.preventDefault();
 
     try {
-      const response = await fetch('http://localhost:3001/api/field-data', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          title: formData.title,
-          category: formData.category,
-          location: formData.location,
-          description: formData.description,
-        }),
+      const savedData = await fieldDataAPI.create({
+        title: formData.title,
+        category: formData.category,
+        location: formData.location,
+        latitude: mapPosition[0],
+        longitude: mapPosition[1],
+        description: formData.description,
+        user_id: 'current-user',
+        time_taken: Date.now()
       });
-
-      if (!response.ok) {
-        throw new Error('Failed to save data');
-      }
-
-      const savedData = await response.json();
 
       toast({
         title: "Data Entry Saved",
@@ -123,7 +116,7 @@ const DataCollection = () => {
     } catch (error) {
       toast({
         title: "Error",
-        description: "An unexpected error occurred",
+        description: error instanceof Error ? error.message : "An unexpected error occurred",
         variant: "destructive",
       });
     }
