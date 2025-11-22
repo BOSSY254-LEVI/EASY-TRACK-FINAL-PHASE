@@ -9,6 +9,7 @@ import { Separator } from "@/components/ui/separator";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/lib/supabase";
 import { motion, AnimatePresence } from "framer-motion";
+import type { Variants } from "framer-motion";
 import { cn } from "@/lib/utils";
 
 const Login = () => {
@@ -122,7 +123,7 @@ const Login = () => {
         staggerChildren: 0.1
       }
     }
-  };
+  } as Variants;
 
   const itemVariants = {
     hidden: { y: 20, opacity: 0 },
@@ -135,8 +136,7 @@ const Login = () => {
         damping: 12
       }
     }
-  };
-
+  } as Variants;
   const cardVariants = {
     hidden: { scale: 0.9, opacity: 0, y: 20 },
     visible: {
@@ -150,7 +150,7 @@ const Login = () => {
         duration: 0.6
       }
     }
-  };
+  } as Variants;
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-white via-gray-50 to-blue-50/30 px-4 relative overflow-hidden">
@@ -381,7 +381,7 @@ const Login = () => {
                   <p className="text-sm text-gray-700 font-medium">
                     Don't have an account?{" "}
                     <Link 
-                      to="/register" 
+                         to ="/register" 
                       className="text-blue-600 hover:text-blue-800 font-bold transition-all duration-300 hover:underline underline-offset-4"
                     >
                       Create account
