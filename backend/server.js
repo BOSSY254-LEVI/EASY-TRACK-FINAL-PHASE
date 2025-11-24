@@ -20,8 +20,8 @@ app.use(express.urlencoded({ limit: process.env.MAX_REQUEST_SIZE || '50mb', exte
 
 // Request timeout
 app.use((req, res, next) => {
-  req.setTimeout(process.env.REQUEST_TIMEOUT || 30000);
-  res.setTimeout(process.env.REQUEST_TIMEOUT || 30000);
+  req.setTimeout(parseInt(process.env.REQUEST_TIMEOUT) || 30000);
+  res.setTimeout(parseInt(process.env.REQUEST_TIMEOUT) || 30000);
   next();
 });
 
@@ -38,6 +38,10 @@ app.get('/health', (req, res) => {
 // Initialize Supabase client
 const supabase = process.env.SUPABASE_URL && process.env.SUPABASE_ANON_KEY
   ? createClient(process.env.SUPABASE_URL, process.env.SUPABASE_ANON_KEY)
+  : null;
+// Initialize Supabase admin (service role) client when provided
+const supaAdmin = process.env.SUPABASE_URL && process.env.SUPABASE_SERVICE_KEY
+  ? createClient(process.env.SUPABASE_URL, process.env.SUPABASE_SERVICE_KEY)
   : null;
 
 // Connect to MongoDB (only if URI is provided)
@@ -69,6 +73,18 @@ const fieldDataSchema = new mongoose.Schema({
 
 const FieldData = mongoose.model('FieldData', fieldDataSchema);
 
+// Basic User schema for local auth/profile fallback (use Supabase in production)
+const userSchema = new mongoose.Schema({
+  email: { type: String, required: true, unique: true },
+  name: { type: String },
+  phone: { type: String },
+  bio: { type: String },
+  passwordHash: { type: String },
+  created_at: { type: Date, default: Date.now }
+});
+
+const User = mongoose.model('User', userSchema);
+
 // Initialize OpenAI (OpenRouter for better model support)
 let openai = null;
 if (process.env.BOSS_AI_API_KEY) {
@@ -76,7 +92,7 @@ if (process.env.BOSS_AI_API_KEY) {
     apiKey: process.env.BOSS_AI_API_KEY,
     baseURL: process.env.AI_BASE_URL || 'https://openrouter.ai/api/v1',
     defaultHeaders: {
-      'HTTP-Referer': 'https://easy-track.app',
+      'HTTP-Referer': 'https://easy-track-organization.vercel.app',
       'X-Title': 'EASY TRACK AI'
     }
   });
@@ -105,6 +121,7 @@ const ENHANCED_SYSTEM_PROMPT = `You are Boss AI, the intelligent assistant for E
 - Guide users through navigation and feature usage
 - Answer questions about data collection, analysis, and field operations
 - Offer best practices for field data management
+- Assist with troubleshooting and common issues
 - Help troubleshoot common issues
 - Analyze user data and provide insights
 - Suggest improvements based on usage patterns
@@ -123,6 +140,29 @@ const ENHANCED_SYSTEM_PROMPT = `You are Boss AI, the intelligent assistant for E
 - Data-driven in recommendations
 
 Keep responses clear and actionable. Use bullet points for lists. Ask clarifying questions when needed.`;
+
+// Global facts that should always be included in the AI system prompt
+const globalFacts = [
+  `The CEO AND FOUNDER OF EASY TRACK IS DEV LIVINGSTONE ODUOR OTIENO COMMONLY KNOWN AS BOSSY LEVI`
+  
+];
+
+// Endpoints to manage global facts for the AI
+app.post('/api/ai/facts', (req, res) => {
+  try {
+    const { fact } = req.body;
+    if (!fact || typeof fact !== 'string') return res.status(400).json({ error: 'fact (string) is required' });
+    globalFacts.push(fact);
+    res.json({ message: 'Fact added', fact, totalFacts: globalFacts.length });
+  } catch (err) {
+    console.error('Error adding fact:', err);
+    res.status(500).json({ error: 'Internal server error' });
+  }
+});
+
+app.get('/api/ai/facts', (req, res) => {
+  res.json(globalFacts);
+});
 
 // Context Manager for Better AI Responses
 class ContextManager {
@@ -253,6 +293,120 @@ app.delete('/api/field-data/:id', async (req, res) => {
   }
 });
 
+// User profile update (supports Supabase if configured, otherwise uses Mongo fallback)
+app.put('/api/user/profile', async (req, res) => {
+  try {
+    const { email, name, phone, bio, userId } = req.body;
+
+    if (!email && !userId) {
+      return res.status(400).json({ error: 'email or userId required' });
+    }
+
+    // If Supabase is configured and a service key is available, prefer updating Supabase users table
+    if (supabase && process.env.SUPABASE_SERVICE_KEY) {
+      try {
+        // Use service role key client
+        const supaAdmin = createClient(process.env.SUPABASE_URL, process.env.SUPABASE_SERVICE_KEY);
+        const updates = {};
+        if (name) updates.name = name;
+        if (phone) updates.phone = phone;
+        if (bio) updates.bio = bio;
+
+        const { data, error } = await supaAdmin.from('users').update(updates).match(userId ? { id: userId } : { email });
+        if (error) throw error;
+        return res.json(data?.[0] || {});
+      } catch (err) {
+        console.error('Supabase profile update failed:', err.message || err);
+        // fallthrough to mongo fallback
+      }
+    }
+
+    if (mongoose.connection.readyState !== 1) {
+      return res.status(503).json({ error: 'Database not connected' });
+    }
+
+    const query = userId ? { _id: userId } : { email };
+    const updated = await User.findOneAndUpdate(query, { $set: { name, phone, bio } }, { new: true, upsert: true });
+    res.json(updated);
+  } catch (error) {
+    console.error('Error updating profile:', error);
+    res.status(500).json({ error: 'Internal server error' });
+  }
+});
+
+// Change password endpoint (local mongo fallback). For production, use Supabase auth admin APIs.
+const crypto = require('crypto');
+function hashPassword(pw) {
+  return crypto.createHash('sha256').update(pw || '').digest('hex');
+}
+
+app.post('/api/user/change-password', async (req, res) => {
+  try {
+    const { email, currentPassword, newPassword } = req.body;
+    if (!email || !currentPassword || !newPassword) {
+      return res.status(400).json({ error: 'email, currentPassword and newPassword are required' });
+    }
+
+    // If Supabase admin client is available, prefer using it for password changes
+    if (supaAdmin) {
+      try {
+        // If we have the regular (anon) supabase client and currentPassword, try to validate the current password first
+        let userId = null;
+        if (supabase && currentPassword) {
+          try {
+            const signIn = await supabase.auth.signInWithPassword({ email, password: currentPassword });
+            if (signIn.error) {
+              return res.status(403).json({ error: 'Current password is incorrect' });
+            }
+            userId = signIn.data?.user?.id || signIn.user?.id || null;
+          } catch (e) {
+            // proceed to lookup by email below
+            console.warn('Supabase sign-in verification failed, will attempt admin lookup', e?.message || e);
+          }
+        }
+
+        // If we still don't have userId, list users via admin API and find by email
+        if (!userId) {
+          const listRes = await supaAdmin.auth.admin.listUsers();
+          if (listRes.error) throw listRes.error;
+          const users = listRes.data?.users || listRes.users || listRes.data || [];
+          const found = Array.isArray(users) ? users.find(u => (u.email || u.user?.email) === email || (u.user?.email === email)) : null;
+          userId = found?.id || found?.user?.id || null;
+        }
+
+        if (!userId) {
+          return res.status(404).json({ error: 'User not found in Supabase auth' });
+        }
+
+        const updateRes = await supaAdmin.auth.admin.updateUserById(userId, { password: newPassword });
+        if (updateRes.error) throw updateRes.error;
+        return res.json({ message: 'Password updated successfully (Supabase admin)' });
+      } catch (err) {
+        console.error('Supabase admin password update failed:', err?.message || err);
+        return res.status(500).json({ error: 'Failed to update password via Supabase admin API' });
+      }
+    }
+
+    if (mongoose.connection.readyState !== 1) {
+      return res.status(503).json({ error: 'Database not connected' });
+    }
+
+    const user = await User.findOne({ email });
+    if (!user) return res.status(404).json({ error: 'User not found' });
+
+    if (user.passwordHash !== hashPassword(currentPassword)) {
+      return res.status(403).json({ error: 'Current password is incorrect' });
+    }
+
+    user.passwordHash = hashPassword(newPassword);
+    await user.save();
+    res.json({ message: 'Password updated successfully' });
+  } catch (error) {
+    console.error('Error changing password:', error);
+    res.status(500).json({ error: 'Internal server error' });
+  }
+});
+
 // Enhanced Chat endpoint with context awareness
 app.post('/api/chat', async (req, res) => {
   try {
@@ -274,13 +428,27 @@ app.post('/api/chat', async (req, res) => {
       contextManager.addContext(userId, context);
     }
 
-    // Build conversation with history
+    // Build conversation with history and include global facts in the system prompt
+    const systemContent = ENHANCED_SYSTEM_PROMPT + (globalFacts && globalFacts.length ? `\n\nImportant Facts:\n${globalFacts.join('\n')}` : '');
+
+    // Include any per-user stored context as additional system instructions (stringified)
+    const userCtx = contextManager.getContext(userId) || [];
+    const userCtxMessages = [];
+    if (Array.isArray(userCtx) && userCtx.length) {
+      userCtx.forEach((c) => {
+        try {
+          const text = typeof c === 'string' ? c : JSON.stringify(c);
+          userCtxMessages.push({ role: 'system', content: `User context: ${text}` });
+        } catch (e) {
+          // ignore context that can't be stringified
+        }
+      });
+    }
+
     const conversationMessages = [
-      { role: 'system', content: ENHANCED_SYSTEM_PROMPT },
-      ...messages.map(msg => ({
-        role: msg.role || 'user',
-        content: msg.content || ''
-      }))
+      { role: 'system', content: systemContent },
+      ...userCtxMessages,
+      ...messages.map(msg => ({ role: msg.role || 'user', content: msg.content || '' }))
     ];
 
     const completion = await openai.chat.completions.create({

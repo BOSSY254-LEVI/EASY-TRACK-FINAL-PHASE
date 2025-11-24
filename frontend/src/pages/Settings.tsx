@@ -25,6 +25,15 @@ const Settings = () => {
   const [showPassword, setShowPassword] = useState(false);
   const [twoFactorEnabled, setTwoFactorEnabled] = useState(true);
   const [biometricEnabled, setBiometricEnabled] = useState(false);
+  // Profile form state
+  const [name, setName] = useState('John Doe');
+  const [email, setEmail] = useState('john.doe@terratrack.org');
+  const [phone, setPhone] = useState('+254 712 345 678');
+  const [bio, setBio] = useState('Field agent specializing in water quality monitoring and environmental data collection.');
+  // Password form state
+  const [currentPassword, setCurrentPassword] = useState('');
+  const [newPassword, setNewPassword] = useState('');
+  const [confirmPassword, setConfirmPassword] = useState('');
 
   const storageStats = {
     used: 4.5,
@@ -38,14 +47,21 @@ const Settings = () => {
 
   const handleSave = async () => {
     setSaving(true);
-    // Simulate API call
-    await new Promise(resolve => setTimeout(resolve, 1500));
-    setSaving(false);
-    toast({
-      title: "✅ Settings Saved",
-      description: "Your preferences have been updated successfully.",
-      className: "bg-green-500 text-white",
-    });
+    try {
+      const res = await fetch('/api/user/profile', {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email, name, phone, bio })
+      });
+      if (!res.ok) throw new Error((await res.json()).error || 'Failed to save');
+      const data = await res.json();
+      setSaving(false);
+      toast({ title: '✅ Settings Saved', description: 'Your profile has been updated.', className: 'bg-green-500 text-white' });
+    } catch (err: any) {
+      setSaving(false);
+      console.error('Save error', err);
+      toast({ title: 'Error', description: err.message || 'Failed to save settings', className: 'bg-red-500 text-white' });
+    }
   };
 
   const handleExportData = () => {
@@ -265,7 +281,8 @@ const Settings = () => {
                           <Label htmlFor="name" className="text-sm font-semibold">Full Name</Label>
                           <Input 
                             id="name" 
-                            defaultValue="John Doe" 
+                            value={name}
+                            onChange={(e) => setName(e.target.value)}
                             className="bg-white/80 backdrop-blur-sm border-gray-200"
                           />
                         </div>
@@ -274,7 +291,8 @@ const Settings = () => {
                           <Input 
                             id="email" 
                             type="email" 
-                            defaultValue="john.doe@terratrack.org"
+                            value={email}
+                            onChange={(e) => setEmail(e.target.value)}
                             className="bg-white/80 backdrop-blur-sm border-gray-200"
                           />
                         </div>
@@ -283,7 +301,8 @@ const Settings = () => {
                           <Input 
                             id="phone" 
                             type="tel" 
-                            defaultValue="+254 712 345 678"
+                            value={phone}
+                            onChange={(e) => setPhone(e.target.value)}
                             className="bg-white/80 backdrop-blur-sm border-gray-200"
                           />
                         </div>
@@ -298,16 +317,17 @@ const Settings = () => {
                         </div>
                       </div>
 
-                      <div className="space-y-2">
-                        <Label htmlFor="bio" className="text-sm font-semibold">Bio</Label>
-                        <textarea
-                          id="bio"
-                          rows={3}
-                          placeholder="Tell us about yourself..."
-                          className="w-full px-3 py-2 border border-gray-200 rounded-lg bg-white/80 backdrop-blur-sm resize-none focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500"
-                          defaultValue="Field agent specializing in water quality monitoring and environmental data collection."
-                        />
-                      </div>
+                        <div className="space-y-2">
+                          <Label htmlFor="bio" className="text-sm font-semibold">Bio</Label>
+                          <textarea
+                            id="bio"
+                            rows={3}
+                            placeholder="Tell us about yourself..."
+                            className="w-full px-3 py-2 border border-gray-200 rounded-lg bg-white/80 backdrop-blur-sm resize-none focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500"
+                            value={bio}
+                            onChange={(e) => setBio(e.target.value)}
+                          />
+                        </div>
                     </SettingSection>
                   </motion.div>
                 )}
@@ -461,11 +481,13 @@ const Settings = () => {
                         <div className="space-y-2">
                           <Label htmlFor="current-password" className="text-sm font-semibold">Current Password</Label>
                           <div className="relative">
-                            <Input 
-                              id="current-password" 
-                              type={showPassword ? "text" : "password"}
-                              className="bg-white/80 backdrop-blur-sm border-gray-200 pr-10"
-                            />
+                              <Input 
+                                id="current-password" 
+                                type={showPassword ? "text" : "password"}
+                                className="bg-white/80 backdrop-blur-sm border-gray-200 pr-10"
+                                value={currentPassword}
+                                onChange={(e) => setCurrentPassword(e.target.value)}
+                              />
                             <button
                               type="button"
                               className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-500 hover:text-gray-700"
@@ -483,6 +505,8 @@ const Settings = () => {
                               id="new-password" 
                               type="password"
                               className="bg-white/80 backdrop-blur-sm border-gray-200"
+                              value={newPassword}
+                              onChange={(e) => setNewPassword(e.target.value)}
                             />
                           </div>
                           <div className="space-y-2">
@@ -491,11 +515,32 @@ const Settings = () => {
                               id="confirm-password" 
                               type="password"
                               className="bg-white/80 backdrop-blur-sm border-gray-200"
+                              value={confirmPassword}
+                              onChange={(e) => setConfirmPassword(e.target.value)}
                             />
                           </div>
                         </div>
 
-                        <Button variant="outline" className="gap-2">
+                        <Button variant="outline" className="gap-2" onClick={async () => {
+                          if (newPassword !== confirmPassword) {
+                            toast({ title: 'Error', description: 'New password and confirm password do not match', className: 'bg-red-500 text-white' });
+                            return;
+                          }
+                          try {
+                            const res = await fetch('/api/user/change-password', {
+                              method: 'POST',
+                              headers: { 'Content-Type': 'application/json' },
+                              body: JSON.stringify({ email, currentPassword, newPassword })
+                            });
+                            const payload = await res.json();
+                            if (!res.ok) throw new Error(payload.error || payload.message || 'Failed to change password');
+                            toast({ title: '✅ Password Changed', description: 'Your password was updated successfully', className: 'bg-green-500 text-white' });
+                            setCurrentPassword(''); setNewPassword(''); setConfirmPassword('');
+                          } catch (err: any) {
+                            console.error('Password change error', err);
+                            toast({ title: 'Error', description: err.message || 'Failed to change password', className: 'bg-red-500 text-white' });
+                          }
+                        }}>
                           <Key className="h-4 w-4" />
                           Change Password
                         </Button>
