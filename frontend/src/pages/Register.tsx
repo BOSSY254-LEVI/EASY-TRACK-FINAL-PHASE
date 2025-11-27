@@ -1,14 +1,14 @@
 import { useState, useRef, useEffect } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Activity, Eye, EyeOff, Shield, Zap, Sparkles, User, Mail, Building, Lock, ArrowRight, Home, CheckCircle } from "lucide-react";
+import { Activity, Eye, EyeOff, Shield, Zap, Sparkles, User, Mail, Building, Lock, ArrowRight, Home, CheckCircle, ArrowLeft, LogIn } from "lucide-react";
 import { Separator } from "@/components/ui/separator";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/lib/supabase";
-import { motion, AnimatePresence } from "framer-motion";
+import { motion } from "framer-motion";
 import { cn } from "@/lib/utils";
 
 const Register = () => {
@@ -25,6 +25,7 @@ const Register = () => {
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [isHovered, setIsHovered] = useState(false);
+  const [theme, setTheme] = useState<'classic' | 'green'>('green');
   const [isFocused, setIsFocused] = useState({
     name: false,
     email: false,
@@ -33,6 +34,40 @@ const Register = () => {
     confirmPassword: false
   });
   const [passwordStrength, setPasswordStrength] = useState(0);
+
+  // Theme configuration with direct class names
+  const themes = {
+    classic: {
+      gradient: "from-white via-gray-50 to-blue-50/30",
+      primaryColor: "text-blue-500",
+      primaryBorder: "border-blue-500",
+      primaryBg: "bg-blue-500",
+      primaryBgGradient: "from-blue-500 to-purple-600",
+      primaryHoverGradient: "from-blue-700 to-purple-700",
+      buttonGradient: "from-blue-600 to-purple-600",
+      buttonHover: "from-blue-700 to-purple-700",
+      shadowColor: "shadow-blue-500/25",
+      bgLight: "bg-blue-100/40",
+      bgLight2: "bg-blue-100/30",
+      accent: "bg-blue-400/20"
+    },
+    green: {
+      gradient: "from-white via-emerald-50/80 to-green-50/40",
+      primaryColor: "text-emerald-500",
+      primaryBorder: "border-emerald-500",
+      primaryBg: "bg-emerald-500",
+      primaryBgGradient: "from-emerald-500 to-green-600",
+      primaryHoverGradient: "from-emerald-700 to-green-700",
+      buttonGradient: "from-emerald-600 to-green-600",
+      buttonHover: "from-emerald-700 to-green-700",
+      shadowColor: "shadow-emerald-500/25",
+      bgLight: "bg-emerald-100/40",
+      bgLight2: "bg-emerald-100/30",
+      accent: "bg-emerald-400/20"
+    }
+  };
+
+  const currentTheme = themes[theme];
 
   // Password strength calculator
   useEffect(() => {
@@ -71,7 +106,6 @@ const Register = () => {
 
     setLoading(true);
 
-    // Add button press animation
     const button = e.currentTarget.querySelector('button[type="submit"]');
     if (button) {
       button.classList.add("scale-95");
@@ -101,9 +135,8 @@ const Register = () => {
         toast({
           title: "Registration Successful!",
           description: "Please check your email to confirm your account.",
-          className: "bg-gradient-to-r from-green-500 to-emerald-600 text-white",
+          className: "bg-green-500 text-white",
         });
-        // Show success state before potential redirect
         setTimeout(() => {
           navigate('/login', { state: { message: 'Please check your email to verify your account.' } });
         }, 2000);
@@ -131,10 +164,26 @@ const Register = () => {
     setIsFocused(prev => ({ ...prev, [field]: false }));
   };
 
+  // Fixed navigation handlers - using window.location as fallback
+  const handleLogin = () => {
+    try {
+      navigate("/login");
+    } catch (error) {
+      window.location.href = "/login";
+    }
+  };
+
+  const handleGoHome = () => {
+    try {
+      navigate("/");
+    } catch (error) {
+      window.location.href = "/";
+    }
+  };
+
   const handleOAuthLogin = async (provider: 'google' | 'azure') => {
     setLoading(true);
     
-    // Add ripple effect
     const event = window.event as MouseEvent;
     if (event) {
       const button = event.target as HTMLElement;
@@ -212,8 +261,7 @@ const Register = () => {
       transition: {
         type: "spring",
         stiffness: 100,
-        damping: 15,
-        duration: 0.6
+        damping: 15
       }
     }
   };
@@ -233,19 +281,14 @@ const Register = () => {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-white via-gray-50 to-blue-50/30 px-4 py-8 relative overflow-hidden">
-      {/* Premium Background Elements */}
+    <div className={`min-h-screen flex items-center justify-center bg-gradient-to-br ${currentTheme.gradient} px-4 py-8 relative overflow-hidden`}>
+      {/* Enhanced Background Elements */}
       <div className="absolute inset-0 overflow-hidden">
-        {/* Geometric patterns */}
-        <div className="absolute top-0 right-0 w-72 h-72 bg-gradient-to-bl from-green-100/40 to-transparent rounded-full blur-2xl"></div>
-        <div className="absolute bottom-0 left-0 w-96 h-96 bg-gradient-to-tr from-blue-100/30 to-transparent rounded-full blur-2xl"></div>
+        <div className={`absolute top-0 right-0 w-72 h-72 bg-gradient-to-bl ${currentTheme.bgLight} to-transparent rounded-full blur-2xl`}></div>
+        <div className={`absolute bottom-0 left-0 w-96 h-96 bg-gradient-to-tr ${currentTheme.bgLight2} to-transparent rounded-full blur-2xl`}></div>
         
-        {/* Grid pattern */}
-        <div className="absolute inset-0 bg-[linear-gradient(rgba(99,102,241,0.03)_1px,transparent_1px),linear-gradient(90deg,rgba(99,102,241,0.03)_1px,transparent_1px)] bg-[size:64px_64px] [mask-image:radial-gradient(ellipse_80%_50%_at_50%_50%,black,transparent)]"></div>
-        
-        {/* Animated floating elements */}
         <motion.div
-          className="absolute top-1/4 right-1/4 w-4 h-4 bg-green-400/20 rounded-full"
+          className={`absolute top-1/4 right-1/4 w-4 h-4 ${currentTheme.accent} rounded-full`}
           animate={{
             y: [0, -30, 0],
             x: [0, -15, 0],
@@ -258,7 +301,7 @@ const Register = () => {
           }}
         />
         <motion.div
-          className="absolute bottom-1/3 left-1/4 w-3 h-3 bg-blue-400/20 rounded-full"
+          className={`absolute bottom-1/3 left-1/4 w-3 h-3 ${currentTheme.accent} rounded-full`}
           animate={{
             y: [0, 20, 0],
             x: [0, 10, 0],
@@ -273,34 +316,38 @@ const Register = () => {
         />
       </div>
 
+      {/* Theme Toggle */}
+      <div className="absolute top-6 right-6 z-50">
+        <div className="flex items-center gap-3 bg-white/80 backdrop-blur-sm rounded-full px-3 py-2 shadow-lg border border-gray-200">
+          <span className="text-sm font-medium text-gray-700">Theme</span>
+          <div 
+            className="w-12 h-6 bg-gray-300 rounded-full p-1 cursor-pointer flex items-center"
+            onClick={() => setTheme(theme === 'classic' ? 'green' : 'classic')}
+          >
+            <motion.div
+              className="w-4 h-4 rounded-full shadow-lg"
+              animate={theme === 'classic' ? { x: 0, backgroundColor: "#3b82f6" } : { x: 24, backgroundColor: "#10b981" }}
+              transition={{ type: "spring", stiffness: 500, damping: 30 }}
+            />
+          </div>
+        </div>
+      </div>
+
       <motion.div
         className="w-full max-w-lg relative"
         initial="hidden"
         animate="visible"
         variants={containerVariants}
-        onHoverStart={() => setIsHovered(true)}
-        onHoverEnd={() => setIsHovered(false)}
       >
-        {/* Premium card with enhanced styling */}
         <motion.div variants={cardVariants}>
-          <Card className="w-full relative bg-white/95 backdrop-blur-md border border-gray-200/60 shadow-2xl shadow-blue-500/5 hover:shadow-blue-500/10 transition-all duration-500 rounded-3xl overflow-hidden">
-            {/* Animated border gradient */}
-            <div className="absolute inset-0 rounded-3xl bg-gradient-to-r from-blue-500/5 via-green-500/5 to-blue-500/5 opacity-0 hover:opacity-100 transition-opacity duration-500" />
-            
-            {/* Premium header section */}
+          <Card className="w-full relative bg-white/95 backdrop-blur-md border border-gray-200/60 shadow-2xl rounded-3xl overflow-hidden">
             <CardHeader className="space-y-4 text-center relative z-10 pb-6">
               <motion.div
-                className="mx-auto w-20 h-20 bg-gradient-to-br from-green-500 to-blue-600 rounded-2xl flex items-center justify-center mb-2 shadow-lg shadow-green-500/25 relative group"
+                className={`mx-auto w-20 h-20 bg-gradient-to-br ${currentTheme.primaryBgGradient} rounded-2xl flex items-center justify-center mb-2 shadow-lg ${currentTheme.shadowColor} relative group`}
                 variants={itemVariants}
                 whileHover={{ scale: 1.05, rotate: 5 }}
-                whileTap={{ scale: 0.95 }}
               >
                 <Activity className="h-10 w-10 text-white" />
-                <motion.div
-                  className="absolute -inset-2 bg-gradient-to-r from-green-500 to-blue-600 rounded-2xl blur-lg opacity-30 group-hover:opacity-50 transition-opacity duration-300"
-                  animate={{ rotate: [0, 360] }}
-                  transition={{ duration: 8, repeat: Infinity, ease: "linear" }}
-                />
               </motion.div>
               
               <motion.div variants={itemVariants}>
@@ -311,16 +358,16 @@ const Register = () => {
               
               <motion.div variants={itemVariants}>
                 <CardDescription className="text-base text-gray-600 flex items-center justify-center gap-2 font-medium">
-                  <Sparkles className="h-4 w-4 text-green-500" />
+                  <Sparkles className={`h-4 w-4 ${currentTheme.primaryColor}`} />
                   Create your account and start making an impact
-                  <Zap className="h-4 w-4 text-blue-500" />
+                  <Zap className={`h-4 w-4 ${currentTheme.primaryColor}`} />
                 </CardDescription>
               </motion.div>
             </CardHeader>
             
             <CardContent className="space-y-6 pt-4">
               <motion.form onSubmit={handleSubmit} className="space-y-5" variants={containerVariants}>
-                {/* Enhanced Name Input */}
+                {/* Form inputs remain the same */}
                 <motion.div variants={itemVariants} className="space-y-3">
                   <Label htmlFor="name" className="text-sm font-semibold text-gray-700 flex items-center gap-2">
                     <User className="h-4 w-4" />
@@ -336,18 +383,17 @@ const Register = () => {
                       onFocus={handleFocus("name")}
                       onBlur={handleBlur("name")}
                       required
-                      className="h-12 pl-11 pr-4 rounded-xl border-2 border-gray-200 bg-white/80 transition-all duration-300 focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 focus:bg-white shadow-sm group-hover:border-gray-300"
+                      className="h-12 pl-11 pr-4 rounded-xl border-2 border-gray-200 bg-white/80 transition-all duration-300 focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 focus:bg-white shadow-sm"
                     />
-                    <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none transition-colors duration-300">
+                    <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
                       <User className={cn(
                         "h-5 w-5 transition-colors duration-300",
-                        isFocused.name ? "text-blue-500" : "text-gray-400"
+                        isFocused.name ? currentTheme.primaryColor : "text-gray-400"
                       )} />
                     </div>
                   </div>
                 </motion.div>
 
-                {/* Enhanced Email Input */}
                 <motion.div variants={itemVariants} className="space-y-3">
                   <Label htmlFor="email" className="text-sm font-semibold text-gray-700 flex items-center gap-2">
                     <Mail className="h-4 w-4" />
@@ -363,18 +409,17 @@ const Register = () => {
                       onFocus={handleFocus("email")}
                       onBlur={handleBlur("email")}
                       required
-                      className="h-12 pl-11 pr-4 rounded-xl border-2 border-gray-200 bg-white/80 transition-all duration-300 focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 focus:bg-white shadow-sm group-hover:border-gray-300"
+                      className="h-12 pl-11 pr-4 rounded-xl border-2 border-gray-200 bg-white/80 transition-all duration-300 focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 focus:bg-white shadow-sm"
                     />
-                    <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none transition-colors duration-300">
+                    <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
                       <Mail className={cn(
                         "h-5 w-5 transition-colors duration-300",
-                        isFocused.email ? "text-blue-500" : "text-gray-400"
+                        isFocused.email ? currentTheme.primaryColor : "text-gray-400"
                       )} />
                     </div>
                   </div>
                 </motion.div>
                 
-                {/* Enhanced Organization Input */}
                 <motion.div variants={itemVariants} className="space-y-3">
                   <Label htmlFor="organization" className="text-sm font-semibold text-gray-700 flex items-center gap-2">
                     <Building className="h-4 w-4" />
@@ -390,18 +435,17 @@ const Register = () => {
                       onFocus={handleFocus("organization")}
                       onBlur={handleBlur("organization")}
                       required
-                      className="h-12 pl-11 pr-4 rounded-xl border-2 border-gray-200 bg-white/80 transition-all duration-300 focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 focus:bg-white shadow-sm group-hover:border-gray-300"
+                      className="h-12 pl-11 pr-4 rounded-xl border-2 border-gray-200 bg-white/80 transition-all duration-300 focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 focus:bg-white shadow-sm"
                     />
-                    <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none transition-colors duration-300">
+                    <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
                       <Building className={cn(
                         "h-5 w-5 transition-colors duration-300",
-                        isFocused.organization ? "text-blue-500" : "text-gray-400"
+                        isFocused.organization ? currentTheme.primaryColor : "text-gray-400"
                       )} />
                     </div>
                   </div>
                 </motion.div>
                 
-                {/* Enhanced Password Input with Strength Meter */}
                 <motion.div variants={itemVariants} className="space-y-3">
                   <Label htmlFor="password" className="text-sm font-semibold text-gray-700 flex items-center gap-2">
                     <Lock className="h-4 w-4" />
@@ -417,12 +461,12 @@ const Register = () => {
                       onFocus={handleFocus("password")}
                       onBlur={handleBlur("password")}
                       required
-                      className="h-12 pl-11 pr-11 rounded-xl border-2 border-gray-200 bg-white/80 transition-all duration-300 focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 focus:bg-white shadow-sm group-hover:border-gray-300"
+                      className="h-12 pl-11 pr-11 rounded-xl border-2 border-gray-200 bg-white/80 transition-all duration-300 focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 focus:bg-white shadow-sm"
                     />
-                    <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none transition-colors duration-300">
+                    <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
                       <Lock className={cn(
                         "h-5 w-5 transition-colors duration-300",
-                        isFocused.password ? "text-blue-500" : "text-gray-400"
+                        isFocused.password ? currentTheme.primaryColor : "text-gray-400"
                       )} />
                     </div>
                     <button
@@ -431,20 +475,18 @@ const Register = () => {
                       onClick={() => setShowPassword(!showPassword)}
                     >
                       {showPassword ? (
-                        <EyeOff className="h-5 w-5 text-gray-500 hover:text-gray-700 transition-colors" />
+                        <EyeOff className="h-5 w-5 text-gray-500" />
                       ) : (
-                        <Eye className="h-5 w-5 text-gray-500 hover:text-gray-700 transition-colors" />
+                        <Eye className="h-5 w-5 text-gray-500" />
                       )}
                     </button>
                   </div>
                   
-                  {/* Password Strength Meter */}
                   {formData.password && (
                     <motion.div 
                       className="space-y-2"
                       initial={{ opacity: 0, height: 0 }}
                       animate={{ opacity: 1, height: 'auto' }}
-                      transition={{ duration: 0.3 }}
                     >
                       <div className="flex justify-between items-center text-xs">
                         <span className="text-gray-600">Password strength:</span>
@@ -468,7 +510,6 @@ const Register = () => {
                   )}
                 </motion.div>
 
-                {/* Enhanced Confirm Password Input */}
                 <motion.div variants={itemVariants} className="space-y-3">
                   <Label htmlFor="confirmPassword" className="text-sm font-semibold text-gray-700 flex items-center gap-2">
                     <Lock className="h-4 w-4" />
@@ -484,12 +525,12 @@ const Register = () => {
                       onFocus={handleFocus("confirmPassword")}
                       onBlur={handleBlur("confirmPassword")}
                       required
-                      className="h-12 pl-11 pr-11 rounded-xl border-2 border-gray-200 bg-white/80 transition-all duration-300 focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 focus:bg-white shadow-sm group-hover:border-gray-300"
+                      className="h-12 pl-11 pr-11 rounded-xl border-2 border-gray-200 bg-white/80 transition-all duration-300 focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 focus:bg-white shadow-sm"
                     />
-                    <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none transition-colors duration-300">
+                    <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
                       <Lock className={cn(
                         "h-5 w-5 transition-colors duration-300",
-                        isFocused.confirmPassword ? "text-blue-500" : "text-gray-400"
+                        isFocused.confirmPassword ? currentTheme.primaryColor : "text-gray-400"
                       )} />
                     </div>
                     <button
@@ -498,14 +539,13 @@ const Register = () => {
                       onClick={() => setShowConfirmPassword(!showConfirmPassword)}
                     >
                       {showConfirmPassword ? (
-                        <EyeOff className="h-5 w-5 text-gray-500 hover:text-gray-700 transition-colors" />
+                        <EyeOff className="h-5 w-5 text-gray-500" />
                       ) : (
-                        <Eye className="h-5 w-5 text-gray-500 hover:text-gray-700 transition-colors" />
+                        <Eye className="h-5 w-5 text-gray-500" />
                       )}
                     </button>
                   </div>
                   
-                  {/* Password Match Indicator */}
                   {formData.confirmPassword && (
                     <motion.div 
                       className="flex items-center gap-2 text-sm"
@@ -527,43 +567,25 @@ const Register = () => {
                   )}
                 </motion.div>
 
-                {/* Enhanced Submit Button */}
                 <motion.div variants={itemVariants}>
                   <Button 
                     type="submit" 
-                    className="w-full h-12 rounded-xl bg-gradient-to-r from-green-600 to-blue-600 hover:from-green-700 hover:to-blue-700 text-white font-semibold text-base relative overflow-hidden group shadow-lg shadow-green-500/25 hover:shadow-green-500/40 transition-all duration-300 border-0"
-                    size="lg" 
+                    className={`w-full h-12 rounded-xl bg-gradient-to-r ${currentTheme.buttonGradient} hover:${currentTheme.buttonHover} text-white font-semibold text-base relative overflow-hidden group transition-all duration-300 border-0`}
                     disabled={loading}
                   >
-                    <span className={cn(
-                      "flex items-center gap-2 transition-all duration-300 group-hover:gap-3",
-                      loading && "opacity-0"
-                    )}>
+                    <span className={cn("flex items-center gap-2", loading && "opacity-0")}>
                       Create Account
                       <ArrowRight className="h-4 w-4 transition-transform duration-300 group-hover:translate-x-1" />
                     </span>
-                    
                     {loading && (
-                      <motion.div
-                        className="absolute inset-0 flex items-center justify-center"
-                        initial={{ opacity: 0 }}
-                        animate={{ opacity: 1 }}
-                      >
-                        <motion.div
-                          className="w-5 h-5 border-2 border-white border-t-transparent rounded-full"
-                          animate={{ rotate: 360 }}
-                          transition={{ duration: 1, repeat: Infinity, ease: "linear" }}
-                        />
-                      </motion.div>
+                      <div className="absolute inset-0 flex items-center justify-center">
+                        <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin" />
+                      </div>
                     )}
-                    
-                    {/* Button shine effect */}
-                    <div className="absolute inset-0 -skew-x-12 -translate-x-full group-hover:translate-x-full transition-transform duration-1000 bg-gradient-to-r from-transparent via-white/30 to-transparent" />
                   </Button>
                 </motion.div>
               </motion.form>
 
-              {/* Enhanced OAuth Section */}
               <motion.div variants={itemVariants} className="space-y-5">
                 <div className="relative">
                   <div className="absolute inset-0 flex items-center">
@@ -574,60 +596,58 @@ const Register = () => {
                   </div>
                 </div>
                 
-                <motion.div className="flex justify-center" variants={containerVariants}>
-                  <motion.div variants={itemVariants}>
-                    <Button
-                      variant="outline"
-                      className="w-40 h-11 rounded-xl border-2 border-gray-200 bg-white hover:bg-gray-50 hover:border-gray-300 transition-all duration-300 group relative overflow-hidden"
-                      onClick={() => handleOAuthLogin('google')}
-                      disabled={loading}
-                    >
-                      <motion.div className="flex items-center gap-2" whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }}>
-                        <svg className="w-5 h-5" viewBox="0 0 24 24">
-                          <path
-                            d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"
-                            fill="#4285F4"
-                          />
-                        </svg>
-                        <span className="font-medium text-gray-700">Google</span>
-                      </motion.div>
-                    </Button>
-                  </motion.div>
-                </motion.div>
+                <div className="flex justify-center">
+                  <Button
+                    variant="outline"
+                    className="w-40 h-11 rounded-xl border-2 border-gray-200 bg-white hover:bg-gray-50 transition-all duration-300"
+                    onClick={() => handleOAuthLogin('google')}
+                    disabled={loading}
+                  >
+                    <div className="flex items-center gap-2">
+                      <svg className="w-5 h-5" viewBox="0 0 24 24">
+                        <path
+                          d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"
+                          fill="#4285F4"
+                        />
+                      </svg>
+                      <span className="font-medium text-gray-700">Google</span>
+                    </div>
+                  </Button>
+                </div>
               </motion.div>
               
-              {/* Enhanced Footer Links */}
+              {/* FIXED NAVIGATION BUTTONS */}
               <div className="space-y-4 pt-4">
                 <div className="text-center space-y-4">
                   <p className="text-sm text-gray-700 font-medium">
-                    Already have an account?{" "}
-                    <Link 
-                      to="/login" 
-                      className="text-blue-600 hover:text-blue-800 font-bold transition-all duration-300 hover:underline underline-offset-4"
-                    >
-                      Sign in
-                    </Link>
+                    Already have an account?
                   </p>
                   
-                  <Link 
-                    to="/" 
-                    className="inline-flex items-center gap-2 text-sm text-gray-700 hover:text-gray-900 transition-all duration-300 group font-bold"
+                  {/* Login Button - Fixed with proper styling */}
+                  <Button
+                    variant="ghost"
+                    onClick={handleLogin}
+                    className={`${theme === 'classic' ? 'text-blue-600 hover:text-blue-800' : 'text-emerald-600 hover:text-emerald-800'} font-bold transition-all duration-300 hover:underline underline-offset-4 flex items-center gap-2 mx-auto`}
                   >
-                    <Home className="h-4 w-4 transition-transform duration-300 group-hover:scale-110" />
+                    <LogIn className="h-4 w-4" />
+                    Sign in to your account
+                  </Button>
+
+                  {/* Home Button - Fixed with proper styling */}
+                  <Button
+                    variant="ghost"
+                    onClick={handleGoHome}
+                    className="text-gray-700 hover:text-gray-900 transition-all duration-300 flex items-center gap-2 mx-auto"
+                  >
+                    <Home className="h-4 w-4" />
                     Back to homepage
-                  </Link>
+                  </Button>
                 </div>
                 
-                {/* Security badge */}
-                <motion.div 
-                  className="flex items-center justify-center gap-2 pt-4 border-t border-gray-100"
-                  initial={{ opacity: 0, y: 10 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ delay: 1 }}
-                >
+                <div className="flex items-center justify-center gap-2 pt-4 border-t border-gray-100">
                   <Shield className="h-4 w-4 text-green-500" />
                   <span className="text-xs text-gray-500 font-medium">Your data is securely encrypted</span>
-                </motion.div>
+                </div>
               </div>
             </CardContent>
           </Card>
