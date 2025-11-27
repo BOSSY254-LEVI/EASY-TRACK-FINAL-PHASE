@@ -223,7 +223,7 @@ const Dashboard = () => {
 
   return (
     <DashboardLayout>
-      <div className={cn("min-h-screen transition-all duration-300", darkMode ? "bg-gray-900 text-white" : "bg-gradient-to-br from-gray-50 via-blue-50/20 to-purple-50/20")}>
+      <div className={cn("min-h-screen transition-all duration-300", darkMode ? "bg-gray-900 text-white" : "bg-gradient-to-br from-white via-emerald-50/80 to-green-50/40")}>
         {/* Enhanced Header */}
         <motion.header 
           className={cn("sticky top-0 z-40 backdrop-blur-md border-b transition-all duration-300", darkMode ? "bg-gray-800/80 border-gray-700" : "bg-white/80 border-gray-200/50")}
@@ -298,7 +298,7 @@ const Dashboard = () => {
                 >
                   <Avatar className="h-8 w-8 border-2 border-white shadow-sm">
                     <AvatarImage src={userAvatar} alt={userFullName} />
-                    <AvatarFallback className="bg-gradient-to-br from-blue-500 to-purple-600 text-white text-sm">
+                    <AvatarFallback className="bg-gradient-to-br from-emerald-500 to-green-600 text-white text-sm">
                       {userFullName.split(' ').map(n => n[0]).join('')}
                     </AvatarFallback>
                   </Avatar>
@@ -529,7 +529,6 @@ const Dashboard = () => {
                   trend="up"
                   icon={FileText}
                   iconColor="bg-gradient-to-br from-blue-500 to-cyan-500"
-                  darkMode={darkMode}
                 />
                 <KPICard
                   title="Open Alerts"
@@ -538,7 +537,6 @@ const Dashboard = () => {
                   trend="down"
                   icon={AlertCircle}
                   iconColor="bg-gradient-to-br from-orange-500 to-red-500"
-                  darkMode={darkMode}
                 />
                 <KPICard
                   title="Active Teams"
@@ -547,7 +545,6 @@ const Dashboard = () => {
                   trend="up"
                   icon={Users}
                   iconColor="bg-gradient-to-br from-green-500 to-emerald-600"
-                  darkMode={darkMode}
                 />
                 <KPICard
                   title="Water Tests"
@@ -556,7 +553,6 @@ const Dashboard = () => {
                   trend="up"
                   icon={Droplet}
                   iconColor="bg-gradient-to-br from-cyan-500 to-blue-600"
-                  darkMode={darkMode}
                 />
               </motion.div>
 
@@ -803,7 +799,7 @@ const Dashboard = () => {
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ duration: 0.6, delay: 0.6 }}
                   >
-                    <ActivityFeed darkMode={darkMode} />
+                    <ActivityFeed />
                   </motion.div>
 
                   <motion.div

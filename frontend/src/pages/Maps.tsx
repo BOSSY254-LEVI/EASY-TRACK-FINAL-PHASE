@@ -349,7 +349,7 @@ const Maps = () => {
 
   return (
     <DashboardLayout>
-      <div className="min-h-screen bg-gradient-to-br from-gray-50 via-blue-50/20 to-purple-50/20 p-6">
+      <div className="min-h-screen bg-gradient-to-br from-white via-emerald-50/80 to-green-50/40 p-6">
         <div className="space-y-6 animate-fade-in">
           {/* Enhanced Header */}
           <motion.div 

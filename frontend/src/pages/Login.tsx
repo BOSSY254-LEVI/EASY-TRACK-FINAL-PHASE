@@ -20,29 +20,24 @@ const Login = () => {
   const [loading, setLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
   const [isHovered, setIsHovered] = useState(false);
-  const [theme, setTheme] = useState<'classic' | 'green'>('green');
+
   const [isFocused, setIsFocused] = useState({ email: false, password: false });
   const cardRef = useRef<HTMLDivElement>(null);
 
-  // Theme configuration
-  const themes = {
-    classic: {
-      gradient: "from-white via-gray-50 to-blue-50/30",
-      primary: "blue",
-      buttonGradient: "from-blue-600 to-purple-600",
-      buttonHover: "from-blue-700 hover:to-purple-700",
-      shadows: "shadow-blue-500/",
-    },
-    green: {
-      gradient: "from-white via-emerald-50/80 to-green-50/40",
-      primary: "emerald",
-      buttonGradient: "from-emerald-600 to-green-600",
-      buttonHover: "from-emerald-700 hover:to-green-700",
-      shadows: "shadow-emerald-500/",
-    }
+  // Consistent theme matching website
+  const currentTheme = {
+    gradient: "from-white via-emerald-50/80 to-green-50/40",
+    primary: "emerald",
+    primaryColor: "text-emerald-500",
+    primaryBorder: "border-emerald-500",
+    primaryBg: "bg-emerald-500",
+    buttonGradient: "from-emerald-600 to-green-600",
+    buttonHover: "from-emerald-700 hover:to-green-700",
+    shadows: "shadow-emerald-500/",
+    bgLight: "bg-emerald-100/40",
+    bgLight2: "bg-emerald-100/30",
+    accent: "bg-emerald-400/20"
   };
-
-  const currentTheme = themes[theme];
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -202,22 +197,7 @@ const Login = () => {
         />
       </div>
 
-      {/* Theme Toggle */}
-      <div className="absolute top-6 right-6 z-50">
-        <div className="flex items-center gap-3 bg-white/80 backdrop-blur-sm rounded-full px-3 py-2 shadow-lg border border-gray-200">
-          <span className="text-sm font-medium text-gray-700">Theme</span>
-          <div 
-            className="w-12 h-6 bg-gray-300 rounded-full p-1 cursor-pointer flex items-center"
-            onClick={() => setTheme(theme === 'classic' ? 'green' : 'classic')}
-          >
-            <motion.div
-              className="w-4 h-4 rounded-full shadow-lg"
-              animate={theme === 'classic' ? { x: 0, backgroundColor: "#3b82f6" } : { x: 24, backgroundColor: "#10b981" }}
-              transition={{ type: "spring", stiffness: 500, damping: 30 }}
-            />
-          </div>
-        </div>
-      </div>
+
 
       <motion.div
         ref={cardRef}
@@ -270,7 +250,7 @@ const Login = () => {
                       onFocus={() => setIsFocused(prev => ({ ...prev, email: true }))}
                       onBlur={() => setIsFocused(prev => ({ ...prev, email: false }))}
                       required
-                      className="h-12 pl-11 pr-4 rounded-xl border-2 border-gray-200 bg-white/80 transition-all duration-300 focus:ring-2 focus:border-blue-500 focus:bg-white shadow-sm"
+                      className="h-12 pl-11 pr-4 rounded-xl border-2 border-gray-200 bg-white/80 text-gray-900 transition-all duration-300 focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 focus:bg-white shadow-sm"
                     />
                     <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
                       <Mail className={cn(

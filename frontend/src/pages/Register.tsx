@@ -25,7 +25,7 @@ const Register = () => {
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [isHovered, setIsHovered] = useState(false);
-  const [theme, setTheme] = useState<'classic' | 'green'>('green');
+
   const [isFocused, setIsFocused] = useState({
     name: false,
     email: false,
@@ -67,7 +67,7 @@ const Register = () => {
     }
   };
 
-  const currentTheme = themes[theme];
+  const currentTheme = themes.green;
 
   // Password strength calculator
   useEffect(() => {
@@ -316,22 +316,7 @@ const Register = () => {
         />
       </div>
 
-      {/* Theme Toggle */}
-      <div className="absolute top-6 right-6 z-50">
-        <div className="flex items-center gap-3 bg-white/80 backdrop-blur-sm rounded-full px-3 py-2 shadow-lg border border-gray-200">
-          <span className="text-sm font-medium text-gray-700">Theme</span>
-          <div 
-            className="w-12 h-6 bg-gray-300 rounded-full p-1 cursor-pointer flex items-center"
-            onClick={() => setTheme(theme === 'classic' ? 'green' : 'classic')}
-          >
-            <motion.div
-              className="w-4 h-4 rounded-full shadow-lg"
-              animate={theme === 'classic' ? { x: 0, backgroundColor: "#3b82f6" } : { x: 24, backgroundColor: "#10b981" }}
-              transition={{ type: "spring", stiffness: 500, damping: 30 }}
-            />
-          </div>
-        </div>
-      </div>
+
 
       <motion.div
         className="w-full max-w-lg relative"
@@ -383,7 +368,7 @@ const Register = () => {
                       onFocus={handleFocus("name")}
                       onBlur={handleBlur("name")}
                       required
-                      className="h-12 pl-11 pr-4 rounded-xl border-2 border-gray-200 bg-white/80 transition-all duration-300 focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 focus:bg-white shadow-sm"
+                      className="h-12 pl-11 pr-4 rounded-xl border-2 border-gray-200 bg-white/80 text-gray-900 transition-all duration-300 focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 focus:bg-white shadow-sm"
                     />
                     <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
                       <User className={cn(
@@ -409,7 +394,7 @@ const Register = () => {
                       onFocus={handleFocus("email")}
                       onBlur={handleBlur("email")}
                       required
-                      className="h-12 pl-11 pr-4 rounded-xl border-2 border-gray-200 bg-white/80 transition-all duration-300 focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 focus:bg-white shadow-sm"
+                      className="h-12 pl-11 pr-4 rounded-xl border-2 border-gray-200 bg-white/80 text-gray-900 transition-all duration-300 focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 focus:bg-white shadow-sm"
                     />
                     <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
                       <Mail className={cn(
@@ -435,7 +420,7 @@ const Register = () => {
                       onFocus={handleFocus("organization")}
                       onBlur={handleBlur("organization")}
                       required
-                      className="h-12 pl-11 pr-4 rounded-xl border-2 border-gray-200 bg-white/80 transition-all duration-300 focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 focus:bg-white shadow-sm"
+                      className="h-12 pl-11 pr-4 rounded-xl border-2 border-gray-200 bg-white/80 text-gray-900 transition-all duration-300 focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 focus:bg-white shadow-sm"
                     />
                     <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
                       <Building className={cn(
@@ -461,7 +446,7 @@ const Register = () => {
                       onFocus={handleFocus("password")}
                       onBlur={handleBlur("password")}
                       required
-                      className="h-12 pl-11 pr-11 rounded-xl border-2 border-gray-200 bg-white/80 transition-all duration-300 focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 focus:bg-white shadow-sm"
+                      className="h-12 pl-11 pr-11 rounded-xl border-2 border-gray-200 bg-white/80 text-gray-900 transition-all duration-300 focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 focus:bg-white shadow-sm"
                     />
                     <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
                       <Lock className={cn(
@@ -627,7 +612,7 @@ const Register = () => {
                   <Button
                     variant="ghost"
                     onClick={handleLogin}
-                    className={`${theme === 'classic' ? 'text-blue-600 hover:text-blue-800' : 'text-emerald-600 hover:text-emerald-800'} font-bold transition-all duration-300 hover:underline underline-offset-4 flex items-center gap-2 mx-auto`}
+                    className="text-emerald-600 hover:text-emerald-800 font-bold transition-all duration-300 hover:underline underline-offset-4 flex items-center gap-2 mx-auto"
                   >
                     <LogIn className="h-4 w-4" />
                     Sign in to your account
